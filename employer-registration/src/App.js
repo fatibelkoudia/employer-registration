@@ -5,11 +5,9 @@ import './App.css';
 
 function App() {
   return(
-  <div> 
-    <h1>Employer Registration</h1>
-    <h2>Register here</h2> 
+  <>  
       <UserForm />
-  </div>
+  </>
   )
   
 
