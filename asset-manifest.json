@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/static/css/main.064996c8.css",
-    "main.js": "/static/js/main.ff0175d5.js",
-    "static/js/488.a290fd12.chunk.js": "/static/js/488.a290fd12.chunk.js",
-    "static/media/logo.svg": "/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
-    "index.html": "/index.html",
-    "main.064996c8.css.map": "/static/css/main.064996c8.css.map",
-    "main.ff0175d5.js.map": "/static/js/main.ff0175d5.js.map",
-    "488.a290fd12.chunk.js.map": "/static/js/488.a290fd12.chunk.js.map"
+    "main.css": "/employer-registration/static/css/main.064996c8.css",
+    "main.js": "/employer-registration/static/js/main.6aca529b.js",
+    "static/js/488.a290fd12.chunk.js": "/employer-registration/static/js/488.a290fd12.chunk.js",
+    "static/media/logo.svg": "/employer-registration/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/employer-registration/index.html",
+    "main.064996c8.css.map": "/employer-registration/static/css/main.064996c8.css.map",
+    "main.6aca529b.js.map": "/employer-registration/static/js/main.6aca529b.js.map",
+    "488.a290fd12.chunk.js.map": "/employer-registration/static/js/488.a290fd12.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.064996c8.css",
-    "static/js/main.ff0175d5.js"
+    "static/js/main.6aca529b.js"
   ]
 }
