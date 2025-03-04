@@ -25,6 +25,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: npm ci and test
         run: |
-          cd: ./employer-registration
+          cd employer-registration
           npm ci
           npm test
