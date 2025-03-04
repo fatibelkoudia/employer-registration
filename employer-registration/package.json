@@ -18,7 +18,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --coverage --collectCoverageFrom=src/**/*js[x] --collectCoverageFrom=!src/reportWebVitals.js --collectCoverageFrom=!src/index.js",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy" : "npm run build",
+    "deploy" : "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -43,6 +45,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "babel-jest": "^29.7.0",
+    "gh-pages": "^6.3.0",
     "react-test-renderer": "^19.0.0"
   }
 }

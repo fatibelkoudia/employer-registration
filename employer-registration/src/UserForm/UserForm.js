@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './UserFormStyle.css';
+import { toast } from 'react-toastify';
 
 function UserForm() {
   const [firstName, setFirstName] = useState('');
@@ -84,6 +85,21 @@ function UserForm() {
     }
 
     alert('Form submitted successfully!');
+
+
+    // Afficher un toaster de succès
+    toast.success('Form submitted successfully!', {
+      position: toast.POSITION.TOP_CENTER,
+      autoClose: 3000, // 3s
+    });
+
+    // Réinitialiser les champs après succès
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setBirthDate('');
+    setCity('');
+    setPostalCode('');
   };
 
   return (
