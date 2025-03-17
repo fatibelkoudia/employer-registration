@@ -12,7 +12,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-scripts": "5.0.1",
-    "react-toastify": "^11.0.3",
+    "react-toastify": "^11.0.5",
     "web-vitals": "^4.2.4"
   },
   "scripts": {
@@ -20,8 +20,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --coverage --collectCoverageFrom=src/**/*js[x] --collectCoverageFrom=!src/reportWebVitals.js --collectCoverageFrom=!src/index.js --watchAll=false",
     "eject": "react-scripts eject",
-    "predeploy" : "npm run build",
-    "deploy" : "gh-pages -d build"
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [

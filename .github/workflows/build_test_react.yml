@@ -28,3 +28,8 @@ jobs:
           cd employer-registration
           npm ci
           npm test
+      - name: Upolad artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: build
+          if-no-files-found: error
