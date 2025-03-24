@@ -30,7 +30,7 @@ jobs:
           npm test
       - name: Upload artifact
         uses: actions/upload-artifact@v2
-         with:
+        with:
           name: build-artifact
           path: build
 
@@ -47,8 +47,6 @@ jobs:
       id-token: write
     needs: build_test
     steps:
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v2
-      
-
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
