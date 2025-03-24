@@ -28,11 +28,11 @@ jobs:
           cd employer-registration
           npm ci
           npm test
-      - name: Upolad artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+         with:
+          name: build-artifact
           path: build
-          if-no-files-found: error
 
     # Deploy job
   deploy:
