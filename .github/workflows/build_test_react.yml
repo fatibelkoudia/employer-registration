@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
-          path: react_test_app/build
+          path: employer-registration/build
           if-no-files-found: error
 
   # Deploy job
