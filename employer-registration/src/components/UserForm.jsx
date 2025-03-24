@@ -7,7 +7,13 @@ import {
   validateBirthDate,
   validatePostalCode,
 } from "../utils/validators";
-
+/**
+ * UserForm is a registration form component that captures user details,
+ * validates them in real-time, and shows success/error messages on submission.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered registration form.
+ */
 function UserForm() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -26,7 +32,13 @@ function UserForm() {
       setIsDisabled(true);
     }
   }, [firstName, lastName, email, birthDate, city, postalCode]);
-
+  /**
+   * Validates a specific field based on its name and value.
+   *
+   * @param {string} name - The name of the field.
+   * @param {string} value - The value of the field.
+   * @returns {string} An error message if invalid, otherwise an empty string.
+   */
   const validateField = (name, value) => {
     let errorMessage = "";
     switch (name) {
