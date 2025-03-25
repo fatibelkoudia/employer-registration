@@ -57,7 +57,10 @@ jobs:
            fi
       - name: build and publish package on NPM
         if: env.NEW_VERSION == 'true'
-        run: npm run build-npm-ci && npm publish
+        run: |
+          cd employer-registration
+          npm run build-npm-ci
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMTOKEN }}
 
