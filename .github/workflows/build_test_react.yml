@@ -49,15 +49,15 @@ jobs:
       - name: check version
         run: |
           LOCAL_VERSION=$(node -p "require('./package.json').version")
-          NPM_VERSION=$(npm show . version)
-           if [ "$LOCAL_VERSION" != "$NPM_VERSION" ];
+          NPM_VERSION=$(npm show employer-registration version)
+           if [ "$LOCAL_VERSION" != "$NPM_VERSION" ]; then
              echo "NEW_VERSION=true" >> $GITHUB_ENV
-             else
+           else
              echo "NEW_VERSION=false" >> $GITHUB_ENV
            fi
       - name: build and publish package on NPM
         if: env.NEW_VERSION == 'true'
-        run: npm run build-npm && npm publish
+        run: npm run build-npm-ci && npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMTOKEN }}
 
