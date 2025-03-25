@@ -1,5 +1,4 @@
 import { 
-    calculateAge, 
     validateBirthDate, 
     validateName, 
     validateEmail, 

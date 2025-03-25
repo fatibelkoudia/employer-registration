@@ -46,6 +46,20 @@ jobs:
           # Upload entire repository
           path: employer-registration/build
           if-no-files-found: error
+      - name: check version
+        run: |
+          LOCAL_VERSION=$(node -p "require('./package.json').version")
+          NPM_VERSION=$(npm show . version)
+           if [ "$LOCAL_VERSION" != "$NPM_VERSION" ];
+             echo "NEW_VERSION=true" >> $GITHUB_ENV
+             else
+             echo "NEW_VERSION=false" >> $GITHUB_ENV
+           fi
+      - name: build and publish package on NPM
+        if: env.NEW_VERSION == 'true'
+        run: npm run build-npm && npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPMTOKEN }}
 
   # Deploy job
   deploy:
