@@ -46,6 +46,8 @@ jobs:
           # Upload entire repository
           path: employer-registration/build
           if-no-files-found: error
+      - name: Authenticate with npm
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMTOKEN }}" > ~/.npmrc
       - name: check version
         run: |
           LOCAL_VERSION=$(node -p "require('./employer-registration/package.json').version")
