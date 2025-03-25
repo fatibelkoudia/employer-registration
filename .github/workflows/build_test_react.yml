@@ -49,7 +49,7 @@ jobs:
       - name: check version
         run: |
           LOCAL_VERSION=$(node -p "require('./employer-registration/package.json').version")
-          NPM_VERSION=$(npm show employer-registration version)
+          NPM_VERSION=$(npm show fatibelkoudia-employer-registration version)
            if [ "$LOCAL_VERSION" != "$NPM_VERSION" ]; then
              echo "NEW_VERSION=true" >> $GITHUB_ENV
            else
