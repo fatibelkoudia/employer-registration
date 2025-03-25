@@ -48,7 +48,7 @@ jobs:
           if-no-files-found: error
       - name: check version
         run: |
-          LOCAL_VERSION=$(node -p "require('./package.json').version")
+          LOCAL_VERSION=$(node -p "require('./employer-registration/package.json').version")
           NPM_VERSION=$(npm show employer-registration version)
            if [ "$LOCAL_VERSION" != "$NPM_VERSION" ]; then
              echo "NEW_VERSION=true" >> $GITHUB_ENV
