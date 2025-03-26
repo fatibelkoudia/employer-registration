@@ -16,6 +16,7 @@
     "web-vitals": "^4.2.4"
   },
   "scripts": {
+    "prebuild": "npm run jsdoc",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "postbuild": "cp -r public/docs build/docs",
