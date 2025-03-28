@@ -16,8 +16,15 @@ function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; 
  * validates them in real-time, and shows success/error messages on submission.
  *
  * @component
+ * @param {Object} props
+ * @param {Array} props.users - The list of registered users.
+ * @param {Function} props.setUsers - Function to update the user list.
  * @returns {JSX.Element} The rendered registration form.
- */function UserForm() {
+ */function UserForm(_ref) {
+  let {
+    users,
+    setUsers
+  } = _ref;
   const [firstName, setFirstName] = (0, _react.useState)("");
   const [lastName, setLastName] = (0, _react.useState)("");
   const [email, setEmail] = (0, _react.useState)("");
@@ -26,68 +33,30 @@ function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; 
   const [postalCode, setPostalCode] = (0, _react.useState)("");
   const [errors, setErrors] = (0, _react.useState)({});
   const [isDisabled, setIsDisabled] = (0, _react.useState)(true);
-  const [users, setUsers] = (0, _react.useState)(() => {
-    const saved = localStorage.getItem("registeredUsers");
-    return saved ? JSON.parse(saved) : [];
-  });
   (0, _react.useEffect)(() => {
-    if (firstName && lastName && email && birthDate && city && postalCode) {
-      setIsDisabled(false);
-    } else {
-      setIsDisabled(true);
-    }
+    setIsDisabled(!(firstName && lastName && email && birthDate && city && postalCode));
   }, [firstName, lastName, email, birthDate, city, postalCode]);
-  /**
-   * Validates a specific field based on its name and value.
-   *
-   * @param {string} name - The name of the field.
-   * @param {string} value - The value of the field.
-   * @returns {string} An error message if invalid, otherwise an empty string.
-   */
   const validateField = (name, value) => {
-    let errorMessage = "";
     switch (name) {
       case "firstName":
-        if (!value || !(0, _validators.validateName)(value)) {
-          errorMessage = "Nom invalide (lettres, accents, tirets uniquement)";
-        }
-        break;
       case "lastName":
-        if (!value || !(0, _validators.validateName)(value)) {
-          errorMessage = "Prénom invalide (lettres, accents, tirets uniquement)";
-        }
-        break;
-      case "email":
-        if (!value || !(0, _validators.validateEmail)(value)) {
-          errorMessage = "Email invalide";
-        }
-        break;
-      case "birthDate":
-        if (!value || !(0, _validators.validateBirthDate)(value)) {
-          errorMessage = "Vous devez avoir au moins 18 ans";
-        }
-        break;
       case "city":
-        if (!value || !(0, _validators.validateName)(value)) {
-          errorMessage = "Ville invalide";
-        }
-        break;
+        return !value || !(0, _validators.validateName)(value) ? "Champ invalide (lettres, accents, tirets uniquement)" : "";
+      case "email":
+        return !value || !(0, _validators.validateEmail)(value) ? "Email invalide" : "";
+      case "birthDate":
+        return !value || !(0, _validators.validateBirthDate)(value) ? "Vous devez avoir au moins 18 ans" : "";
       case "postalCode":
-        if (!value || !(0, _validators.validatePostalCode)(value)) {
-          errorMessage = "Code postal invalide (5 chiffres)";
-        }
-        break;
+        return !value || !(0, _validators.validatePostalCode)(value) ? "Code postal invalide (5 chiffres)" : "";
       default:
-        break;
+        return "";
     }
-    return errorMessage;
   };
   const handleChange = (setter, fieldName) => e => {
     const value = e.target.value;
     setter(value);
-    // Met à jour les erreurs pour le champ concerné
-    setErrors(prevErrors => ({
-      ...prevErrors,
+    setErrors(prev => ({
+      ...prev,
       [fieldName]: validateField(fieldName, value)
     }));
   };
@@ -101,7 +70,8 @@ function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; 
       city: validateField("city", city),
       postalCode: validateField("postalCode", postalCode)
     };
-    if (Object.values(newErrors).some(err => err !== "")) {
+    setErrors(newErrors);
+    if (Object.values(newErrors).some(err => err)) {
       _reactToastify.toast.error("Veuillez corriger les erreurs du formulaire.");
       return;
     }
@@ -117,8 +87,6 @@ function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; 
     setUsers(updatedUsers);
     localStorage.setItem("registeredUsers", JSON.stringify(updatedUsers));
     _reactToastify.toast.success("Inscription réussie !");
-
-    // Reset fields
     setFirstName("");
     setLastName("");
     setEmail("");
@@ -134,97 +102,63 @@ function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; 
       children: "User Registration"
     }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("form", {
       onSubmit: handleSubmit,
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-        className: "form-group",
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("input", {
-          type: "text",
-          name: "firstName",
-          placeholder: "First Name",
-          className: `input-field ${errors.firstName ? "error" : ""}`,
-          value: firstName,
-          onChange: handleChange(setFirstName, "firstName")
-        }), errors.firstName && /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-          className: "error-message",
-          children: errors.firstName
-        })]
-      }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-        className: "form-group",
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("input", {
-          type: "text",
-          name: "lastName",
-          placeholder: "Last Name",
-          className: `input-field ${errors.lastName ? "error" : ""}`,
-          value: lastName,
-          onChange: handleChange(setLastName, "lastName")
-        }), errors.lastName && /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-          className: "error-message",
-          children: errors.lastName
-        })]
-      }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-        className: "form-group",
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("input", {
-          type: "email",
-          name: "email",
-          placeholder: "Email",
-          className: `input-field ${errors.email ? "error" : ""}`,
-          value: email,
-          onChange: handleChange(setEmail, "email")
-        }), errors.email && /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-          className: "error-message",
-          children: errors.email
-        })]
-      }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-        className: "form-group",
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("input", {
-          type: "date",
-          name: "birthDate",
-          "aria-label": "birthDate",
-          className: `input-field ${errors.birthDate ? "error" : ""}`,
-          value: birthDate,
-          onChange: handleChange(setBirthDate, "birthDate")
-        }), errors.birthDate && /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-          className: "error-message",
-          children: errors.birthDate
-        })]
-      }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-        className: "form-group",
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("input", {
-          type: "text",
-          name: "city",
-          placeholder: "City",
-          className: `input-field ${errors.city ? "error" : ""}`,
-          value: city,
-          onChange: handleChange(setCity, "city")
-        }), errors.city && /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-          className: "error-message",
-          children: errors.city
-        })]
-      }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-        className: "form-group",
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("input", {
-          type: "text",
-          name: "postalCode",
-          placeholder: "Postal Code",
-          className: `input-field ${errors.postalCode ? "error" : ""}`,
-          value: postalCode,
-          onChange: handleChange(setPostalCode, "postalCode")
-        }), errors.postalCode && /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-          className: "error-message",
-          children: errors.postalCode
-        })]
+      children: [[{
+        name: "firstName",
+        placeholder: "First Name",
+        value: firstName,
+        setter: setFirstName
+      }, {
+        name: "lastName",
+        placeholder: "Last Name",
+        value: lastName,
+        setter: setLastName
+      }, {
+        name: "email",
+        placeholder: "Email",
+        value: email,
+        setter: setEmail
+      }, {
+        name: "birthDate",
+        type: "date",
+        value: birthDate,
+        setter: setBirthDate
+      }, {
+        name: "city",
+        placeholder: "City",
+        value: city,
+        setter: setCity
+      }, {
+        name: "postalCode",
+        placeholder: "Postal Code",
+        value: postalCode,
+        setter: setPostalCode
+      }].map(_ref2 => {
+        let {
+          name,
+          placeholder,
+          value,
+          setter,
+          type = "text"
+        } = _ref2;
+        return /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
+          className: "form-group",
+          children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("input", {
+            type: type,
+            name: name,
+            placeholder: placeholder,
+            className: `input-field ${errors[name] ? "error" : ""}`,
+            value: value,
+            onChange: handleChange(setter, name),
+            "aria-label": name
+          }), errors[name] && /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
+            className: "error-message",
+            children: errors[name]
+          })]
+        }, name);
       }), /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
         type: "submit",
         disabled: isDisabled,
         children: "Submit"
-      })]
-    }), users.length > 0 && /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-      className: "user-list",
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("h3", {
-        children: "Liste des inscrits :"
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)("ul", {
-        children: users.map((user, index) => /*#__PURE__*/(0, _jsxRuntime.jsxs)("li", {
-          children: [user.firstName, " ", user.lastName, " \u2013 ", user.email, " \u2013", " ", user.birthDate, " \u2013 ", user.city, " \u2013 ", user.postalCode]
-        }, index))
       })]
     })]
   });

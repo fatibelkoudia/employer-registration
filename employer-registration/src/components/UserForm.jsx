@@ -7,90 +7,61 @@ import {
   validateBirthDate,
   validatePostalCode,
 } from "../utils/validators";
-import UserList from "./UserList";
 
 /**
  * UserForm is a registration form component that captures user details,
  * validates them in real-time, and shows success/error messages on submission.
  *
  * @component
+ * @param {Object} props
+ * @param {Array} props.users - The list of registered users.
+ * @param {Function} props.setUsers - Function to update the user list.
  * @returns {JSX.Element} The rendered registration form.
  */
-function UserForm() {
+function UserForm({ users, setUsers }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
-
   const [errors, setErrors] = useState({});
   const [isDisabled, setIsDisabled] = useState(true);
 
-  const [users, setUsers] = useState(() => {
-    const saved = localStorage.getItem("registeredUsers");
-    return saved ? JSON.parse(saved) : [];
-  });
   useEffect(() => {
-    if (firstName && lastName && email && birthDate && city && postalCode) {
-      setIsDisabled(false);
-    } else {
-      setIsDisabled(true);
-    }
+    setIsDisabled(
+      !(firstName && lastName && email && birthDate && city && postalCode)
+    );
   }, [firstName, lastName, email, birthDate, city, postalCode]);
-  /**
-   * Validates a specific field based on its name and value.
-   *
-   * @param {string} name - The name of the field.
-   * @param {string} value - The value of the field.
-   * @returns {string} An error message if invalid, otherwise an empty string.
-   */
+
   const validateField = (name, value) => {
-    let errorMessage = "";
     switch (name) {
       case "firstName":
-        if (!value || !validateName(value)) {
-          errorMessage = "Nom invalide (lettres, accents, tirets uniquement)";
-        }
-        break;
       case "lastName":
-        if (!value || !validateName(value)) {
-          errorMessage =
-            "Prénom invalide (lettres, accents, tirets uniquement)";
-        }
-        break;
-      case "email":
-        if (!value || !validateEmail(value)) {
-          errorMessage = "Email invalide";
-        }
-        break;
-      case "birthDate":
-        if (!value || !validateBirthDate(value)) {
-          errorMessage = "Vous devez avoir au moins 18 ans";
-        }
-        break;
       case "city":
-        if (!value || !validateName(value)) {
-          errorMessage = "Ville invalide";
-        }
-        break;
+        return !value || !validateName(value)
+          ? "Champ invalide (lettres, accents, tirets uniquement)"
+          : "";
+      case "email":
+        return !value || !validateEmail(value) ? "Email invalide" : "";
+      case "birthDate":
+        return !value || !validateBirthDate(value)
+          ? "Vous devez avoir au moins 18 ans"
+          : "";
       case "postalCode":
-        if (!value || !validatePostalCode(value)) {
-          errorMessage = "Code postal invalide (5 chiffres)";
-        }
-        break;
+        return !value || !validatePostalCode(value)
+          ? "Code postal invalide (5 chiffres)"
+          : "";
       default:
-        break;
+        return "";
     }
-    return errorMessage;
   };
 
   const handleChange = (setter, fieldName) => (e) => {
     const value = e.target.value;
     setter(value);
-    // Met à jour les erreurs pour le champ concerné
-    setErrors((prevErrors) => ({
-      ...prevErrors,
+    setErrors((prev) => ({
+      ...prev,
       [fieldName]: validateField(fieldName, value),
     }));
   };
@@ -107,7 +78,9 @@ function UserForm() {
       postalCode: validateField("postalCode", postalCode),
     };
 
-    if (Object.values(newErrors).some((err) => err !== "")) {
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).some((err) => err)) {
       toast.error("Veuillez corriger les erreurs du formulaire.");
       return;
     }
@@ -118,8 +91,6 @@ function UserForm() {
     localStorage.setItem("registeredUsers", JSON.stringify(updatedUsers));
 
     toast.success("Inscription réussie !");
-
-    // Reset fields
     setFirstName("");
     setLastName("");
     setEmail("");
@@ -133,93 +104,57 @@ function UserForm() {
     <div className="container">
       <h2 className="title">User Registration</h2>
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <input
-            type="text"
-            name="firstName"
-            placeholder="First Name"
-            className={`input-field ${errors.firstName ? "error" : ""}`}
-            value={firstName}
-            onChange={handleChange(setFirstName, "firstName")}
-          />
-          {errors.firstName && (
-            <p className="error-message">{errors.firstName}</p>
-          )}
-        </div>
-
-        <div className="form-group">
-          <input
-            type="text"
-            name="lastName"
-            placeholder="Last Name"
-            className={`input-field ${errors.lastName ? "error" : ""}`}
-            value={lastName}
-            onChange={handleChange(setLastName, "lastName")}
-          />
-          {errors.lastName && (
-            <p className="error-message">{errors.lastName}</p>
-          )}
-        </div>
-
-        <div className="form-group">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            className={`input-field ${errors.email ? "error" : ""}`}
-            value={email}
-            onChange={handleChange(setEmail, "email")}
-          />
-          {errors.email && <p className="error-message">{errors.email}</p>}
-        </div>
-
-        <div className="form-group">
-          <input
-            type="date"
-            name="birthDate"
-            aria-label="birthDate"
-            className={`input-field ${errors.birthDate ? "error" : ""}`}
-            value={birthDate}
-            onChange={handleChange(setBirthDate, "birthDate")}
-          />
-          {errors.birthDate && (
-            <p className="error-message">{errors.birthDate}</p>
-          )}
-        </div>
-
-        <div className="form-group">
-          <input
-            type="text"
-            name="city"
-            placeholder="City"
-            className={`input-field ${errors.city ? "error" : ""}`}
-            value={city}
-            onChange={handleChange(setCity, "city")}
-          />
-          {errors.city && <p className="error-message">{errors.city}</p>}
-        </div>
-
-        <div className="form-group">
-          <input
-            type="text"
-            name="postalCode"
-            placeholder="Postal Code"
-            className={`input-field ${errors.postalCode ? "error" : ""}`}
-            value={postalCode}
-            onChange={handleChange(setPostalCode, "postalCode")}
-          />
-          {errors.postalCode && (
-            <p className="error-message">{errors.postalCode}</p>
-          )}
-        </div>
+        {[
+          {
+            name: "firstName",
+            placeholder: "First Name",
+            value: firstName,
+            setter: setFirstName,
+          },
+          {
+            name: "lastName",
+            placeholder: "Last Name",
+            value: lastName,
+            setter: setLastName,
+          },
+          {
+            name: "email",
+            placeholder: "Email",
+            value: email,
+            setter: setEmail,
+          },
+          {
+            name: "birthDate",
+            type: "date",
+            value: birthDate,
+            setter: setBirthDate,
+          },
+          { name: "city", placeholder: "City", value: city, setter: setCity },
+          {
+            name: "postalCode",
+            placeholder: "Postal Code",
+            value: postalCode,
+            setter: setPostalCode,
+          },
+        ].map(({ name, placeholder, value, setter, type = "text" }) => (
+          <div key={name} className="form-group">
+            <input
+              type={type}
+              name={name}
+              placeholder={placeholder}
+              className={`input-field ${errors[name] ? "error" : ""}`}
+              value={value}
+              onChange={handleChange(setter, name)}
+              aria-label={name}
+            />
+            {errors[name] && <p className="error-message">{errors[name]}</p>}
+          </div>
+        ))}
 
         <button type="submit" disabled={isDisabled}>
           Submit
         </button>
       </form>
-      <div>
-        <UserList users={users} />
-      </div>
     </div>
   );
 }
