@@ -26,6 +26,10 @@ function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; 
   const [postalCode, setPostalCode] = (0, _react.useState)("");
   const [errors, setErrors] = (0, _react.useState)({});
   const [isDisabled, setIsDisabled] = (0, _react.useState)(true);
+  const [users, setUsers] = (0, _react.useState)(() => {
+    const saved = localStorage.getItem("registeredUsers");
+    return saved ? JSON.parse(saved) : [];
+  });
   (0, _react.useEffect)(() => {
     if (firstName && lastName && email && birthDate && city && postalCode) {
       setIsDisabled(false);
@@ -97,24 +101,24 @@ function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; 
       city: validateField("city", city),
       postalCode: validateField("postalCode", postalCode)
     };
-    setErrors(newErrors);
-
-    // Vérifier s'il y a des erreurs
     if (Object.values(newErrors).some(err => err !== "")) {
-      console.log("Form has errors:", newErrors);
+      _reactToastify.toast.error("Veuillez corriger les erreurs du formulaire.");
       return;
     }
-    console.log({
+    const newUser = {
       firstName,
       lastName,
       email,
       birthDate,
       city,
       postalCode
-    });
-    _reactToastify.toast.success("Form submitted successfully!");
+    };
+    const updatedUsers = [...users, newUser];
+    setUsers(updatedUsers);
+    localStorage.setItem("registeredUsers", JSON.stringify(updatedUsers));
+    _reactToastify.toast.success("Inscription réussie !");
 
-    // Réinitialiser les champs
+    // Reset fields
     setFirstName("");
     setLastName("");
     setEmail("");
@@ -212,6 +216,15 @@ function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; 
         type: "submit",
         disabled: isDisabled,
         children: "Submit"
+      })]
+    }), users.length > 0 && /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
+      className: "user-list",
+      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("h3", {
+        children: "Liste des inscrits :"
+      }), /*#__PURE__*/(0, _jsxRuntime.jsx)("ul", {
+        children: users.map((user, index) => /*#__PURE__*/(0, _jsxRuntime.jsxs)("li", {
+          children: [user.firstName, " ", user.lastName, " \u2013 ", user.email, " \u2013", " ", user.birthDate, " \u2013 ", user.city, " \u2013 ", user.postalCode]
+        }, index))
       })]
     })]
   });

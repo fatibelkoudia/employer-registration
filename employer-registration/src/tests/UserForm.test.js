@@ -82,7 +82,7 @@ describe("UserForm Component", () => {
 
     // Wait for the success toast to appear
     await waitFor(() => {
-      expect(screen.getByText(/form submitted successfully/i)).toBeInTheDocument();
+        expect(screen.getByText(/inscription réussie/i)).toBeInTheDocument();
     });
 
     // Verify that inputs are reset

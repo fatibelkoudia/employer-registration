@@ -118,7 +118,7 @@ describe("UserForm Component", () => {
 
     // Wait for the success toast to appear
     await (0, _react2.waitFor)(() => {
-      expect(_react2.screen.getByText(/form submitted successfully/i)).toBeInTheDocument();
+      expect(_react2.screen.getByText(/inscription réussie/i)).toBeInTheDocument();
     });
 
     // Verify that inputs are reset
