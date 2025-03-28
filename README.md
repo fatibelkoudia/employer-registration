@@ -1,47 +1,77 @@
-# 👤 Employer Registration Form
+# Employer Registration Form
 
-A small React app that allows a user to register using a form with validation, toast notifications.
+A small React app that allows users to register via a validated form. Includes real-time error feedback, persistent local storage, and a dynamic list of registered users.
 
-> 📦 Published on npm  
-> 🌐 Live Demo: [GitHub Pages](https://fatibelkoudia.github.io/employer-registration)  
-> 📘 Docs: [View Component Documentation](https://fatibelkoudia.github.io/employer-registration/docs)
+> Published on [npm](https://www.npmjs.com/package/fatibelkoudia-employer-registration)  
+> Live Demo: [GitHub Pages](https://fatibelkoudia.github.io/employer-registration)  
+> Documentation: [View JSDoc](https://fatibelkoudia.github.io/employer-registration/docs)
 
 ---
 
-## 🚀 Features
+## Features
 
-- Real-time validation on all fields
+- Real-time form validation
 - Submit button disabled until all fields are valid
-- Errors displayed in red under each invalid field
-- Success/error toast messages
-- Fully unit and integration tested (97.53% coverage)
-- JSDoc documentation generated & published
-- CI/CD via GitHub Actions for testing + deployment
+- Inline error messages displayed in red
+- Toast notifications for success & errors
+- Data saved to localStorage
+- 97.5%+ test coverage (unit + integration)
+- JSDoc documentation auto-generated
+- CI/CD with GitHub Actions (test & deploy)
 
 ---
 
-## 📝 Form Fields
+## Form Fields & Validation Rules
 
-| Field       | Validation Rule                                    |
-| ----------- | -------------------------------------------------- |
-| First Name  | Required, letters only (accents, hyphens accepted) |
-| Last Name   | Same as above                                      |
-| Email       | Must be a valid email format                       |
-| Birth Date  | Required, must be 18 or older                      |
-| City        | Letters only                                       |
-| Postal Code | Must be a valid French postal code (5 digits)      |
+| Field           | Rule                                              |
+| --------------- | ------------------------------------------------- |
+| **First Name**  | Required, only letters (accents, hyphens allowed) |
+| **Last Name**   | Same as above                                     |
+| **Email**       | Must be a valid email address                     |
+| **Birth Date**  | Must be at least 18 years old                     |
+| **City**        | Letters only                                      |
+| **Postal Code** | Valid French postal code (exactly 5 digits)       |
 
 ---
 
-## 📦 Scripts
+## Available Scripts
 
-| Script                 | Description                                |
-| ---------------------- | ------------------------------------------ |
-| `npm start`            | Run the app locally                        |
-| `npm test`             | Run all tests (unit + integration)         |
-| `npm run build`        | Build the app for production               |
-| `npm run jsdoc`        | Generate documentation in `public/docs`    |
-| `npm run deploy`       | Deploy the app to GitHub Pages             |
-| `npm run build-npm-ci` | Transpile the component for NPM publishing |
+Inside the `employer-registration` directory:
+
+| Script                 | Description                                   |
+| ---------------------- | --------------------------------------------- |
+| `npm start`            | Runs the app in development mode              |
+| `npm test`             | Launches the test runner (unit & integration) |
+| `npm run build`        | Builds the app for production                 |
+| `npm run jsdoc`        | Generates component documentation (JSDoc)     |
+| `npm run deploy`       | Deploys the app to GitHub Pages               |
+| `npm run build-npm-ci` | Builds the library version for npm publishing |
+
+---
+
+## Tests
+
+Tests include:
+
+- Age calculation & validation
+- Name, email, and postal code format validation
+- Button disabling logic
+- Error messages and toast appearance
+- LocalStorage saving + form reset on success
+- Display of registered users
+
+Coverage report: 97%+  
+See `/coverage` folder or check [Codecov](https://app.codecov.io/) if integrated.
+
+---
+
+## Deployment & CI/CD
+
+GitHub Actions automates:
+
+- Linting & testing on every push
+- Code coverage upload (Codecov)
+- Deployment to GitHub Pages
+- Publishing to npm (on new version)
 
 ---
