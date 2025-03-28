@@ -9,7 +9,7 @@
     "opts": {
       "destination": "./public/docs",
       "recurse": true,
-      "readme": "./README.md"
+      "readme": "../README.md"
     }
   }
   
