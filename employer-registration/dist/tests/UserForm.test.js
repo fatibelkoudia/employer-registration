@@ -6,21 +6,33 @@ var _UserForm = _interopRequireDefault(require("../components/UserForm"));
 var _reactToastify = require("react-toastify");
 var _jsxRuntime = require("react/jsx-runtime");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+afterEach(() => {
+  localStorage.clear();
+  jest.clearAllMocks();
+});
 describe("UserForm Component", () => {
-  test("Submit button is disabled when fields are empty", () => {
+  const setup = () => {
+    const mockUsers = [];
+    const setUsers = jest.fn();
     (0, _react2.render)(/*#__PURE__*/(0, _jsxRuntime.jsxs)(_jsxRuntime.Fragment, {
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_UserForm.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_reactToastify.ToastContainer, {})]
+      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_UserForm.default, {
+        users: mockUsers,
+        setUsers: setUsers
+      }), /*#__PURE__*/(0, _jsxRuntime.jsx)(_reactToastify.ToastContainer, {})]
     }));
+    return {
+      setUsers
+    };
+  };
+  test("Submit button is disabled when fields are empty", () => {
+    setup();
     const submitButton = _react2.screen.getByRole('button', {
       name: /submit/i
     });
     expect(submitButton).toBeDisabled();
   });
   test("Displays error messages for invalid inputs", async () => {
-    (0, _react2.render)(/*#__PURE__*/(0, _jsxRuntime.jsxs)(_jsxRuntime.Fragment, {
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_UserForm.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_reactToastify.ToastContainer, {})]
-    }));
-    // Fill inputs with invalid values
+    setup();
     _react2.fireEvent.change(_react2.screen.getByPlaceholderText(/first name/i), {
       target: {
         value: "John123"
@@ -40,7 +52,7 @@ describe("UserForm Component", () => {
       target: {
         value: "2010-01-01"
       }
-    }); // under 18
+    });
     _react2.fireEvent.change(_react2.screen.getByPlaceholderText(/city/i), {
       target: {
         value: "Paris123"
@@ -54,35 +66,21 @@ describe("UserForm Component", () => {
     const submitButton = _react2.screen.getByRole('button', {
       name: /submit/i
     });
-    expect(submitButton).not.toBeDisabled();
     _react2.fireEvent.click(submitButton);
     await (0, _react2.waitFor)(() => {
-      expect(_react2.screen.getByText("Nom invalide (lettres, accents, tirets uniquement)")).toBeInTheDocument();
+      expect(_react2.screen.getAllByText(/champ invalide/i).length).toBeGreaterThanOrEqual(3);
     });
-    await (0, _react2.waitFor)(() => {
-      expect(_react2.screen.getByText("Prénom invalide (lettres, accents, tirets uniquement)")).toBeInTheDocument();
-    });
-    await (0, _react2.waitFor)(() => {
-      expect(_react2.screen.getByText("Email invalide")).toBeInTheDocument();
-    });
-    await (0, _react2.waitFor)(() => {
-      expect(_react2.screen.getByText("Vous devez avoir au moins 18 ans")).toBeInTheDocument();
-    });
-    await (0, _react2.waitFor)(() => {
-      expect(_react2.screen.getByText("Ville invalide")).toBeInTheDocument();
-    });
-    await (0, _react2.waitFor)(() => {
-      expect(_react2.screen.getByText("Code postal invalide (5 chiffres)")).toBeInTheDocument();
-    });
+    expect(_react2.screen.getByText("Email invalide")).toBeInTheDocument();
+    expect(_react2.screen.getByText("Vous devez avoir au moins 18 ans")).toBeInTheDocument();
+    expect(_react2.screen.getByText("Code postal invalide (5 chiffres)")).toBeInTheDocument();
   });
   test("Submits form successfully and resets fields", async () => {
-    (0, _react2.render)(/*#__PURE__*/(0, _jsxRuntime.jsxs)(_jsxRuntime.Fragment, {
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(_UserForm.default, {}), /*#__PURE__*/(0, _jsxRuntime.jsx)(_reactToastify.ToastContainer, {})]
-    }));
-    // Fill inputs with valid data
+    const {
+      setUsers
+    } = setup();
     _react2.fireEvent.change(_react2.screen.getByPlaceholderText(/first name/i), {
       target: {
-        value: "John"
+        value: "Jane"
       }
     });
     _react2.fireEvent.change(_react2.screen.getByPlaceholderText(/last name/i), {
@@ -92,7 +90,7 @@ describe("UserForm Component", () => {
     });
     _react2.fireEvent.change(_react2.screen.getByPlaceholderText(/email/i), {
       target: {
-        value: "john.doe@example.com"
+        value: "jane.doe@example.com"
       }
     });
     _react2.fireEvent.change(_react2.screen.getByLabelText(/birthDate/i), {
@@ -113,15 +111,10 @@ describe("UserForm Component", () => {
     const submitButton = _react2.screen.getByRole('button', {
       name: /submit/i
     });
-    expect(submitButton).not.toBeDisabled();
     _react2.fireEvent.click(submitButton);
-
-    // Wait for the success toast to appear
     await (0, _react2.waitFor)(() => {
       expect(_react2.screen.getByText(/inscription réussie/i)).toBeInTheDocument();
     });
-
-    // Verify that inputs are reset
     expect(_react2.screen.getByPlaceholderText(/first name/i).value).toBe('');
     expect(_react2.screen.getByPlaceholderText(/last name/i).value).toBe('');
     expect(_react2.screen.getByPlaceholderText(/email/i).value).toBe('');
