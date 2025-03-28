@@ -25,6 +25,10 @@ function UserForm() {
   const [errors, setErrors] = useState({});
   const [isDisabled, setIsDisabled] = useState(true);
 
+  const [users, setUsers] = useState(() => {
+    const saved = localStorage.getItem("registeredUsers");
+    return saved ? JSON.parse(saved) : [];
+  });
   useEffect(() => {
     if (firstName && lastName && email && birthDate && city && postalCode) {
       setIsDisabled(false);
@@ -101,19 +105,19 @@ function UserForm() {
       postalCode: validateField("postalCode", postalCode),
     };
 
-    setErrors(newErrors);
-
-    // Vérifier s'il y a des erreurs
     if (Object.values(newErrors).some((err) => err !== "")) {
-      console.log("Form has errors:", newErrors);
+      toast.error("Veuillez corriger les erreurs du formulaire.");
       return;
     }
 
-    console.log({ firstName, lastName, email, birthDate, city, postalCode });
+    const newUser = { firstName, lastName, email, birthDate, city, postalCode };
+    const updatedUsers = [...users, newUser];
+    setUsers(updatedUsers);
+    localStorage.setItem("registeredUsers", JSON.stringify(updatedUsers));
 
-    toast.success("Form submitted successfully!");
+    toast.success("Inscription réussie !");
 
-    // Réinitialiser les champs
+    // Reset fields
     setFirstName("");
     setLastName("");
     setEmail("");
@@ -211,6 +215,19 @@ function UserForm() {
           Submit
         </button>
       </form>
+      {users.length > 0 && (
+        <div className="user-list">
+          <h3>Liste des inscrits :</h3>
+          <ul>
+            {users.map((user, index) => (
+              <li key={index}>
+                {user.firstName} {user.lastName} – {user.email} –{" "}
+                {user.birthDate} – {user.city} – {user.postalCode}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
