@@ -217,7 +217,9 @@ function UserForm() {
           Submit
         </button>
       </form>
-      <UserList users={users} />
+      <div>
+        <UserList users={users} />
+      </div>
     </div>
   );
 }
