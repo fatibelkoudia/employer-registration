@@ -7,6 +7,8 @@ import {
   validateBirthDate,
   validatePostalCode,
 } from "../utils/validators";
+import UserList from "./UserList";
+
 /**
  * UserForm is a registration form component that captures user details,
  * validates them in real-time, and shows success/error messages on submission.
@@ -215,19 +217,7 @@ function UserForm() {
           Submit
         </button>
       </form>
-      {users.length > 0 && (
-        <div className="user-list">
-          <h3>Liste des inscrits :</h3>
-          <ul>
-            {users.map((user, index) => (
-              <li key={index}>
-                {user.firstName} {user.lastName} – {user.email} –{" "}
-                {user.birthDate} – {user.city} – {user.postalCode}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <UserList users={users} />
     </div>
   );
 }
