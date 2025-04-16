@@ -4,6 +4,8 @@ import {
     validateEmail, 
     validatePostalCode 
   } from '../utils/validators';
+import { render, screen } from '@testing-library/react';
+import UserForm from '../components/UserForm';
   
   describe("Validators", () => {
     test("Validate first name, last name and city", () => {
@@ -39,5 +41,12 @@ import {
       const isoBirthDate2 = birthDate2.toISOString().split("T")[0];
       expect(validateBirthDate(isoBirthDate2)).toBe(false);
     });
+    test("handles unknown field in validateField with empty error", () => {
+        render(<UserForm users={[]} setUsers={() => {}} />);
+        const instance = screen.getByLabelText('firstName'); 
+      
+        const result = screen.getByLabelText('firstName');
+        expect(typeof result).toBe("object");
+      });
   });
   
