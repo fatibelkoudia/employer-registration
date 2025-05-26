@@ -1,18 +1,44 @@
-#Use  root/example as user/password credentials
-version: '3.1'
+version: '3.8'
 
 services:
   db:
-    image: mysql-migration
+    image: mysql:9.2
     restart: always
     environment:
-     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "3306:3306"
     volumes:
       - ./sqlfiles:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      interval: 15s
+      timeout: 1m
+      retries: 3
 
   adminer:
     image: adminer
     restart: always
     ports:
       - "8080:8080"
-    
+
+  server:
+    restart: on-failure
+    image: python-api-2
+    volumes:
+      - ./server:/server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: fastapi_app
+    environment:
+      - MYSQL_DATABASE
+      - MYSQL_HOST=db
+      - MYSQL_USER
+      - MYSQL_ROOT_PASSWORD
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: uvicorn server:app --proxy-headers --host 0.0.0.0 --port 8000 
