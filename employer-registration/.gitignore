@@ -25,3 +25,4 @@ yarn-error.log*
 
 # Ignore generated JSDoc output
 /public/docs
+.vercel
