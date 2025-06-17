@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./UserFormStyle.css";
+import axios from "axios";
 import { toast } from "react-toastify";
 import {
   validateName,
@@ -86,18 +87,24 @@ function UserForm({ users, setUsers }) {
     }
 
     const newUser = { firstName, lastName, email, birthDate, city, postalCode };
-    const updatedUsers = [...users, newUser];
-    setUsers(updatedUsers);
-    localStorage.setItem("registeredUsers", JSON.stringify(updatedUsers));
 
-    toast.success("Inscription réussie !");
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setBirthDate("");
-    setCity("");
-    setPostalCode("");
-    setErrors({});
+    axios
+      .post("http://localhost:8000/users", newUser)
+      .then((response) => {
+        setUsers([...users, response.data.utilisateur]);
+        toast.success("Inscription réussie !");
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setBirthDate("");
+        setCity("");
+        setPostalCode("");
+        setErrors({});
+      })
+      .catch((error) => {
+        console.error("Erreur d’inscription :", error);
+        toast.error("Échec de l’inscription.");
+      });
   };
 
   return (
