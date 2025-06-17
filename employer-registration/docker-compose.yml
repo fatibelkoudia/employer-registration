@@ -1,5 +1,4 @@
-#version: '3.8'
-
+version: '3.9'
 services:
   db:
     image: mysql:9.2
@@ -44,15 +43,16 @@ services:
     command: uvicorn server:app --proxy-headers --host 0.0.0.0 --port 8000 
 
   react:
-    image: react
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileReact
     ports:
       - "3000:3000"
     environment:
       - REACT_APP_SERVER_PORT=8000
-    volumes:
-      - .:/app
-      - /app/node_modules
+    # volumes:
+    #   - .:/app
+    #   - /app/node_modules
     depends_on:
       - server
     command: npm start

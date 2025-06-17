@@ -8,6 +8,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.4",
     "@mui/material": "^6.4.4",
+    "axios": "^1.10.0",
     "cra-template": "1.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -17,7 +18,7 @@
   },
   "scripts": {
     "prebuild": "npm run jsdoc",
-    "start": "react-scripts start",
+    "start": "react-scripts start --host 0.0.0.0",
     "build": "react-scripts build",
     "postbuild": "cp -r public/docs build/docs",
     "test": "react-scripts test --coverage --collectCoverageFrom=src/**/*js[x] --collectCoverageFrom=!src/reportWebVitals.js --collectCoverageFrom=!src/index.js --watchAll=false",
@@ -25,7 +26,8 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "jsdoc": "jsdoc -R ../README.md -c ./jsdoc.config.json -r -d ./public/docs",
-    "build-npm-ci": "NODE_ENV=production && rm -rf dist && mkdir dist && npx babel src --out-dir dist --copy-files"
+    "build-npm-ci": "NODE_ENV=production && rm -rf dist && mkdir dist && npx babel src --out-dir dist --copy-files",
+    "cypress": "cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -54,8 +56,14 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "babel-jest": "^29.7.0",
+    "cypress": "^14.4.1",
     "gh-pages": "^6.3.0",
     "jsdoc": "^4.0.4",
     "react-test-renderer": "^19.0.0"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules/(?!axios))"
+    ]
   }
 }
