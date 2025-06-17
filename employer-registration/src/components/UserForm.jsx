@@ -29,6 +29,19 @@ function UserForm({ users, setUsers }) {
   const [errors, setErrors] = useState({});
   const [isDisabled, setIsDisabled] = useState(true);
 
+  // ➕ Récupère les utilisateurs à l'initialisation
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/users")
+      .then((res) => {
+        setUsers(res.data.utilisateurs || []);
+      })
+      .catch((err) => {
+        console.error("Erreur de récupération :", err);
+        toast.error("Impossible de charger les utilisateurs.");
+      });
+  }, [setUsers]);
+
   useEffect(() => {
     setIsDisabled(
       !(firstName && lastName && email && birthDate && city && postalCode)
