@@ -1,9 +1,10 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import App from '../App';
 import axios from 'axios';
 
 jest.mock('axios');
+const mockedAxios = axios;
 
 describe("App Integration", () => {
   const mockUsers = [
@@ -18,16 +19,32 @@ describe("App Integration", () => {
   ];
 
   beforeEach(() => {
-    axios.get.mockResolvedValue({ data: { utilisateurs: mockUsers } });
-    axios.post.mockResolvedValue({
+    // Clear all mocks before each test
+    jest.clearAllMocks();
+    
+    // Mock axios methods
+    mockedAxios.get = jest.fn().mockResolvedValue({ 
+      data: { utilisateurs: mockUsers } 
+    });
+    mockedAxios.post = jest.fn().mockResolvedValue({
       data: { utilisateur: { ...mockUsers[0] } }
     });
+  });
+
+  afterEach(() => {
+    cleanup();
+    jest.clearAllMocks();
   });
 
   test("Displays existing users on load and submits a new user", async () => {
     render(<App />);
 
-    // Les utilisateurs mockés sont affichés (test d’intégration App + UserList)
+    // Wait for the initial axios call to complete and users to be displayed
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith("http://localhost:8000/users");
+    });
+
+    // Les utilisateurs mockés sont affichés (test d'intégration App + UserList)
     expect(await screen.findByText("Jané")).toBeInTheDocument();
     expect(screen.getByText("Doe")).toBeInTheDocument();
 
@@ -40,6 +57,11 @@ describe("App Integration", () => {
     fireEvent.change(screen.getByPlaceholderText(/postal code/i), { target: { value: "31000" } });
 
     fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+
+    // Wait for the form submission to complete
+    await waitFor(() => {
+      expect(mockedAxios.post).toHaveBeenCalled();
+    });
 
     // Confirme affichage du toast ou mise à jour de la liste
     expect(await screen.findByText(/inscription réussie/i)).toBeInTheDocument();
