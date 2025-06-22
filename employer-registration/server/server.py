@@ -1,75 +1,73 @@
-import os
 import mysql.connector
-from fastapi import FastAPI, Depends, HTTPException
+import os
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import Request
-from pydantic import BaseModel
 
 app = FastAPI()
 
-# Autoriser toutes les origines (CORS)
+# CORS settings for allowing the React app to connect to FastAPI
+origins = [
+    "http://localhost:3000",  # React frontend URL
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,            # Only allow React
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Modèle de données pour la requête POST
-class UserCreate(BaseModel):
-    firstName: str
-    lastName: str
-    email: str
-    birthDate: str
-    city: str
-    postalCode: str
-
-# Fonction pour créer une connexion MySQL à chaque requête
-def get_db_connection():
-    try:
-        conn = mysql.connector.connect(
-            host=os.getenv("MYSQL_HOST", "localhost"),
-            user=os.getenv("MYSQL_USER", "root"),
-            password=os.getenv("MYSQL_ROOT_PASSWORD", ""),
-            database=os.getenv("MYSQL_DATABASE", "test"),
-            port=3306
-        )
-        return conn
-    except mysql.connector.Error as err:
-        print("Erreur de connexion MySQL:", err)
-        raise HTTPException(status_code=500, detail="Erreur de base de données")
+# MySQL connection setup
+def get_connection():
+    return mysql.connector.connect(
+        host=os.getenv("MYSQL_HOST"),
+        user=os.getenv("MYSQL_USER"),
+        password=os.getenv("MYSQL_ROOT_PASSWORD"),
+        database=os.getenv("MYSQL_DATABASE"),
+        port=3306,
+    )
 
 @app.get("/")
-async def hello_world():
-    return {"message": "Hello world"}
+async def root():
+    return {"message": "API is running"}
 
 @app.get("/users")
 async def get_users():
-    conn = get_db_connection()
-    cursor = conn.cursor()
     try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
         cursor.execute("SELECT * FROM users")
         records = cursor.fetchall()
         return {"utilisateurs": records}
+    except Exception as e:
+        return {"error": str(e)}
     finally:
         cursor.close()
         conn.close()
 
 @app.post("/users")
-async def create_user(user: UserCreate):
-    conn = get_db_connection()
-    cursor = conn.cursor()
+async def create_user(request: Request):
     try:
-        cursor.execute("""
+        data = await request.json()
+        first_name = data.get("firstName")
+        last_name = data.get("lastName")
+        email = data.get("email")
+        birth_date = data.get("birthDate")
+        city = data.get("city")
+        postal_code = data.get("postalCode")
+
+        conn = get_connection()
+        cursor = conn.cursor()
+        sql = """
             INSERT INTO users (first_name, last_name, email, birth_date, city, postal_code)
             VALUES (%s, %s, %s, %s, %s, %s)
-        """, (user.firstName, user.lastName, user.email, user.birthDate, user.city, user.postalCode))
+        """
+        cursor.execute(sql, (first_name, last_name, email, birth_date, city, postal_code))
         conn.commit()
-        return {"utilisateur": user}
-    except mysql.connector.Error as err:
-        print("Erreur d’insertion:", err)
-        raise HTTPException(status_code=500, detail="Erreur lors de l’insertion")
+        return {"utilisateur": data}
+    except Exception as e:
+        return {"error": str(e)}
     finally:
         cursor.close()
         conn.close()
