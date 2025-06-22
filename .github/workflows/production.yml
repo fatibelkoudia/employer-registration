@@ -7,16 +7,16 @@ env:
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
   # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build_test_and_deploy:
     permissions:
-      contents: write        # Job-level permissions configuration starts here
-      pull-requests: write   # write' access to pull requests
+      contents: write # Job-level permissions configuration starts here
+      pull-requests: write # write' access to pull requests
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -31,10 +31,45 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm ci and test
+      - name: npm install and test
         run: |
-          npm ci
+          npm install --legacy-peer-deps
           npm test
+
+      - name: Start Docker Stack for E2E
+        run: |
+          docker compose -f docker-compose.ci.yml up -d --build
+          sleep 60 # attendre que MySQL soit prêt
+          docker compose -f docker-compose.ci.yml ps
+          docker compose -f docker-compose.ci.yml logs db
+          echo "On vérifie que l'API FastAPI répond..."
+          timeout 120 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:8000/users)" != "200" ]]; do sleep 2; done' || true
+          echo "API check terminé"
+
+      - name: Debug API connectivity
+        run: |
+          echo "Test des endpoints..."
+          curl -f http://localhost:8000/ || (echo "Endpoint racine KO" && exit 1)
+          echo "Test users endpoint..."
+          curl -f http://localhost:8000/users || (echo "Endpoint users KO" && exit 1)
+          echo "Test de React..."
+          curl -I http://localhost:3000 || (echo "React app KO" && exit 1)
+
+      - name: Run E2E tests with Cypress
+        uses: cypress-io/github-action@v6
+        with:
+          install: false
+          wait-on: "http://localhost:3000, http://localhost:8000/users"
+          wait-on-timeout: 180
+          browser: chrome
+        env:
+          CYPRESS_viewportWidth: 1920
+          CYPRESS_viewportHeight: 1080
+
+      - name: Stop Docker Stack
+        run: |
+          docker compose -f docker-compose.ci.yml down
+
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
