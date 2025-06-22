@@ -28,38 +28,33 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: npm ci and test
         run: |
-          cd employer-registration
           npm ci
           npm run build --if-present
           npm test
 
       - name: Generate JSDoc
-        working-directory: employer-registration
         run: npm run jsdoc
-        
+
       - name: Start Docker Stack for E2E
         run: |
-          cd employer-registration
           docker compose up -d --build
           sleep 20 # attendre que les services soient prêts
 
       - name: Run E2E tests with Cypress
         uses: cypress-io/github-action@v6
         with:
-          working-directory: employer-registration
-          wait-on: 'http://localhost:3000'
+          wait-on: "http://localhost:3000"
           wait-on-timeout: 120
           browser: chrome
 
       - name: Stop Docker Stack
         run: |
-          cd employer-registration
           docker compose down
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
-          directory: employer-registration/coverage
+          directory: coverage
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Setup Pages
         id: pages
@@ -68,13 +63,13 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
-          path: employer-registration/build
+          path: build
           if-no-files-found: error
       - name: Authenticate with npm
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMTOKEN }}" > ~/.npmrc
       - name: check version
         run: |
-          LOCAL_VERSION=$(node -p "require('./employer-registration/package.json').version")
+          LOCAL_VERSION=$(node -p "require('./package.json').version")
           NPM_VERSION=$(npm show fatibelkoudia-employer-registration version)
            if [ "$LOCAL_VERSION" != "$NPM_VERSION" ]; then
              echo "NEW_VERSION=true" >> $GITHUB_ENV
@@ -84,7 +79,6 @@ jobs:
       - name: build and publish package on NPM
         if: env.NEW_VERSION == 'true'
         run: |
-          cd employer-registration
           npm run build-npm-ci
           npm publish
         env:
