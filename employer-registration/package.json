@@ -69,5 +69,15 @@
     "moduleNameMapper": {
       "\\.(css|less|scss|sass)$": "identity-obj-proxy"
     }
+  },
+  "eslintConfig": {
+  "extends": [
+    "react-app",
+    "react-app/jest"
+  ],
+  "env": {
+    "browser": true,
+    "cypress": true
   }
+}
 }
