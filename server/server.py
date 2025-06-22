@@ -8,6 +8,8 @@ app = FastAPI()
 # CORS settings for allowing the React app to connect to FastAPI
 origins = [
     "http://localhost:3000",
+    "employer-registration-fz.vercel.app",
+    "https://*.vercel.app",
 ]
 
 app.add_middleware(

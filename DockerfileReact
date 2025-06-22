@@ -1,16 +1,19 @@
 #  pull official base image
 FROM node:20
+
 # set working directory
 WORKDIR /app
 
 # add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+ENV PATH=/app/node_modules/.bin:$PATH
 
 # install app dependencies
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm install --silent
-RUN npm install react-scripts@5.0.1 -g --silent
+
+# Clear npm cache and install dependencies
+RUN npm cache clean --force
+RUN npm ci --legacy-peer-deps --verbose
 
 # add app 
 COPY . ./

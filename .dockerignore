@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+build
+.dockerignore
+Dockerfile
+DockerfileReact
+README.md
+.env
+.git
+.gitignore
+.github
+coverage
+cypress
+.nyc_output
+.cypress
+dist
