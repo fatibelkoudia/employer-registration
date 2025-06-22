@@ -58,12 +58,16 @@
     "babel-jest": "^29.7.0",
     "cypress": "^14.4.1",
     "gh-pages": "^6.3.0",
+    "identity-obj-proxy": "^3.0.0",
     "jsdoc": "^4.0.4",
     "react-test-renderer": "^19.0.0"
   },
   "jest": {
     "transformIgnorePatterns": [
-      "/node_modules/(?!axios))"
-    ]
+      "/node_modules/(?!axios)"
+    ],
+    "moduleNameMapper": {
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
+    }
   }
 }
