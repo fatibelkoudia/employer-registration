@@ -38,16 +38,29 @@ jobs:
       - name: Start Docker Stack for E2E
         run: |
           docker compose -f docker-compose.ci.yml up -d --build
-          sleep 60 # attendre que MySQL soit complètement prêt
+          sleep 60 # attendre que MySQL soit prêt
           docker compose -f docker-compose.ci.yml ps
           docker compose -f docker-compose.ci.yml logs db
+          echo "On vérifie que l'API FastAPI répond..."
+          timeout 120 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:8000/users)" != "200" ]]; do sleep 2; done' || true
+          echo "API check terminé"
+
+      - name: Debug API connectivity
+        run: |
+          echo "Test des endpoints..."
+          curl -v http://localhost:8000/ || echo "Endpoint racine KO"
+          curl -v http://localhost:8000/users || echo "Endpoint users KO"
+          echo "Test de React..."
+          curl -I http://localhost:3000 || echo "React app KO"
+          docker compose -f docker-compose.ci.yml logs react | tail -20
+          docker compose -f docker-compose.ci.yml logs server | tail -20
 
       - name: Run E2E tests with Cypress
         uses: cypress-io/github-action@v6
         with:
           install: false
-          wait-on: "http://localhost:3000"
-          wait-on-timeout: 120
+          wait-on: "http://localhost:3000, http://localhost:8000/users"
+          wait-on-timeout: 180
           browser: chrome
         env:
           CYPRESS_viewportWidth: 1920

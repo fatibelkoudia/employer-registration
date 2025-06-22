@@ -1,22 +1,40 @@
 describe('Formulaire d\'inscription', () => {
   it('Soumet un formulaire avec des données valides', () => {
-    // Définir la taille de la fenêtre pour un affichage plein écran
+    // Mode plein écran pour les tests
     cy.viewport(1920, 1080);
     cy.visit('/');
     
-    // Attendre que la page soit complètement chargée
+    // Attendre que les champs soient là
     cy.get('input[name="firstName"]').should('be.visible');
     
-    // Utiliser force: true pour éviter les problèmes d'overlay
-    cy.get('input[name="firstName"]').type('Ali', { force: true });
-    cy.get('input[name="lastName"]').type('Ben', { force: true });
-    cy.get('input[name="email"]').type('ali.ben@example.com', { force: true });
-    cy.get('input[name="birthDate"]').type('1990-01-01', { force: true });
-    cy.get('input[name="city"]').type('Toulouse', { force: true });
-    cy.get('input[name="postalCode"]').type('31000', { force: true });
+    // Laisser le temps à l'API de démarrer (parfois c'est lent)
+    cy.wait(3000);
+    
+    // Remplir le formulaire (force: true au cas où il y a des trucs qui gênent)
+    cy.get('input[name="firstName"]').clear().type('Ali', { force: true });
+    cy.get('input[name="lastName"]').clear().type('Ben', { force: true });
+    cy.get('input[name="email"]').clear().type('ali.ben@example.com', { force: true });
+    cy.get('input[name="birthDate"]').clear().type('1990-01-01', { force: true });
+    cy.get('input[name="city"]').clear().type('Toulouse', { force: true });
+    cy.get('input[name="postalCode"]').clear().type('31000', { force: true });
 
-    cy.contains(/submit/i).click({ force: true });
+    // Surveiller l'appel API
+    cy.intercept('POST', 'http://localhost:8000/users').as('createUser');
 
-    cy.contains(/réussie/i, { timeout: 10000 }).should('exist');
+    // Cliquer sur le bouton
+    cy.get('button[type="submit"]').should('be.visible').click({ force: true });
+
+    // Vérifier que l'API répond bien
+    cy.wait('@createUser', { timeout: 20000 }).then((interception) => {
+      expect(interception.response.statusCode).to.equal(200);
+    });
+
+    // Les champs doivent être vidés après succès
+    cy.get('input[name="firstName"]').should('have.value', '');
+    
+    // Le toast de succès doit apparaître
+    cy.get('.Toastify__toast--success', { timeout: 15000 })
+      .should('be.visible')
+      .and('contain.text', 'réussie');
   });
 });

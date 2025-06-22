@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS ynov_ci;
-CREATE DATABASE ynov_ci;
-USE ynov_ci;
+DROP DATABASE IF EXISTS ynov_ci_test;
+CREATE DATABASE ynov_ci_test;
+USE ynov_ci_test;
 
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
