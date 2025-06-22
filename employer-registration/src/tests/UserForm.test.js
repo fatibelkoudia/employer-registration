@@ -14,7 +14,7 @@ afterEach(() => {
 describe("UserForm Component", () => {
 
   const setup = () => {
-    axios.get.mockResolvedValue({ data: { utilisateurs: [] } }); // 🔥 Ajouté ici
+    axios.get.mockResolvedValue({ data: { utilisateurs: [] } }); 
     const mockUsers = [];
     const setUsers = jest.fn();
     render(

@@ -27,16 +27,20 @@ function UserList({ users }) {
           </tr>
         </thead>
         <tbody>
-          {users.map((user, index) => (
-            <tr key={index}>
-              <td>{user.firstName}</td>
-              <td>{user.lastName}</td>
-              <td>{user.email}</td>
-              <td>{user.birthDate}</td>
-              <td>{user.city}</td>
-              <td>{user.postalCode}</td>
-            </tr>
-          ))}
+          {Array.isArray(users) &&
+            users.map(
+              (user, index) =>
+                user && (
+                  <tr key={index}>
+                    <td>{user.firstName}</td>
+                    <td>{user.lastName}</td>
+                    <td>{user.email}</td>
+                    <td>{user.birthDate}</td>
+                    <td>{user.city}</td>
+                    <td>{user.postalCode}</td>
+                  </tr>
+                )
+            )}
         </tbody>
       </table>
     </div>
