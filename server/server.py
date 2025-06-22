@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# CORS settings for allowing the React app to connect to FastAPI
+# Configuration CORS pour permettre à React de se connecter
 origins = [
     "http://localhost:3000",
     "employer-registration-fz.vercel.app",
@@ -20,7 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# MySQL connection setup
+# Configuration connexion MySQL
 def get_connection():
     return mysql.connector.connect(
         host=os.getenv("MYSQL_HOST"),

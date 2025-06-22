@@ -1,7 +1,7 @@
 /**
- * Validates a name (letters, spaces, accents, and hyphens allowed).
- * @param {string} value - The name to validate.
- * @returns {boolean} True if valid, false otherwise.
+ * Valide un nom (lettres, espaces, accents et tirets)
+ * @param {string} value - nom à valider
+ * @returns {boolean} true si valide
  */
 export const validateName = (value) => {
     // Autorise lettres (accentuées), espaces et tirets
@@ -9,18 +9,18 @@ export const validateName = (value) => {
   return regex.test(value);
 };
 /**
- * Validates an email address.
- * @param {string} value - The email to validate.
- * @returns {boolean} True if valid, false otherwise.
+ * Valide une adresse email
+ * @param {string} value - email à vérifier
+ * @returns {boolean} true si format correct
  */
 export const validateEmail = (value) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(value);
   };
 /**
- * Calculates age from a birthdate.
- * @param {string} birthDate - The birthdate in ISO format (YYYY-MM-DD).
- * @returns {number} The calculated age.
+ * Calcule l'âge à partir de la date de naissance
+ * @param {string} birthDate - date de naissance (YYYY-MM-DD)
+ * @returns {number} âge calculé
  */
   export const calculateAge = (birthDate) => {
     const birth = new Date(birthDate);
@@ -33,20 +33,20 @@ export const validateEmail = (value) => {
     return age;
   };
   
-  /**
- * Validates a birthdate to ensure the user is at least 18 years old.
- * @param {string} value - The birthdate.
- * @returns {boolean} True if user is 18 or older, false otherwise.
+/**
+ * Vérifie que l'utilisateur a au moins 18 ans
+ * @param {string} value - date de naissance
+ * @returns {boolean} true si majeur
  */
   export const validateBirthDate = (value) => {
     // Vérifier que l'utilisateur a au moins 18 ans
     const age = calculateAge(value);
     return age >= 18;
   };
-  /**
- * Validates a French postal code (5 digits).
- * @param {string} value - The postal code to validate.
- * @returns {boolean} True if valid, false otherwise.
+/**
+ * Valide un code postal français (5 chiffres)
+ * @param {string} value - code postal à vérifier
+ * @returns {boolean} true si format valide
  */
   export const validatePostalCode = (value) => {
     const regex = /^\d{5}$/;

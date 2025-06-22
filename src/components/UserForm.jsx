@@ -10,14 +10,12 @@ import {
 } from "../utils/validators";
 
 /**
- * UserForm is a registration form component that captures user details,
- * validates them in real-time, and shows success/error messages on submission.
- *
+ * Formulaire d'inscription utilisateur avec validation
  * @component
  * @param {Object} props
- * @param {Array} props.users - The list of registered users.
- * @param {Function} props.setUsers - Function to update the user list.
- * @returns {JSX.Element} The rendered registration form.
+ * @param {Array} props.users - liste des utilisateurs
+ * @param {Function} props.setUsers - met à jour la liste
+ * @returns {JSX.Element} formulaire de saisie
  */
 function UserForm({ users, setUsers }) {
   const [firstName, setFirstName] = useState("");
@@ -29,7 +27,7 @@ function UserForm({ users, setUsers }) {
   const [errors, setErrors] = useState({});
   const [isDisabled, setIsDisabled] = useState(true);
 
-  // ➕ Récupère les utilisateurs à l'initialisation
+  // Récupère les utilisateurs au chargement
   useEffect(() => {
     axios
       .get("http://localhost:8000/users")

@@ -1,19 +1,18 @@
-#version: '3.9'
 services:
   db:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ci_test_password
+      MYSQL_DATABASE: ynov_ci_test
+      MYSQL_USER: ci_test_user
+      MYSQL_PASSWORD: ci_test_pass
     ports:
       - "3306:3306"
     volumes:
       - ./sqlfiles:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pci_test_password"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -35,10 +34,10 @@ services:
       dockerfile: Dockerfile
     container_name: fastapi_app
     environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_DATABASE=ynov_ci_test
       - MYSQL_HOST=db
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=ci_test_user
+      - MYSQL_ROOT_PASSWORD=ci_test_password
     ports:
       - "8000:8000"
     depends_on:
@@ -60,4 +59,3 @@ services:
     depends_on:
       - server
     command: npm start
-  

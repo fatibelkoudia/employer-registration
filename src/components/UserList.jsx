@@ -3,11 +3,10 @@ import PropTypes from "prop-types";
 import "./UserListStyle.css";
 
 /**
- * UserList displays a list of registered users in a table.
- *
+ * Affiche la liste des utilisateurs inscrits
  * @component
- * @param {Object[]} users - Array of user objects.
- * @returns {JSX.Element} The rendered user table.
+ * @param {Object[]} users - tableau des utilisateurs
+ * @returns {JSX.Element} tableau des utilisateurs
  */
 function UserList({ users }) {
   if (!users.length) return null;

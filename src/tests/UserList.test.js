@@ -39,16 +39,16 @@ describe("App Integration", () => {
   test("Displays existing users on load and submits a new user", async () => {
     render(<App />);
 
-    // Wait for the initial axios call to complete and users to be displayed
+    // Attend que l'appel axios initial se termine et que les utilisateurs s'affichent
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith("http://localhost:8000/users");
     });
 
-    // Les utilisateurs mockés sont affichés (test d'intégration App + UserList)
+    // Les utilisateurs de test s'affichent bien
     expect(await screen.findByText("Jané")).toBeInTheDocument();
     expect(screen.getByText("Doe")).toBeInTheDocument();
 
-    // Formulaire rempli
+    // On remplit le formulaire
     fireEvent.change(screen.getByPlaceholderText(/first name/i), { target: { value: "Ali" } });
     fireEvent.change(screen.getByPlaceholderText(/last name/i), { target: { value: "Ben" } });
     fireEvent.change(screen.getByPlaceholderText(/email/i), { target: { value: "ali.ben@example.com" } });
@@ -58,12 +58,12 @@ describe("App Integration", () => {
 
     fireEvent.click(screen.getByRole('button', { name: /submit/i }));
 
-    // Wait for the form submission to complete
+    // Attend que le formulaire soit envoyé
     await waitFor(() => {
       expect(mockedAxios.post).toHaveBeenCalled();
     });
 
-    // Confirme affichage du toast ou mise à jour de la liste
+    // Vérifie que le message de succès apparaît
     expect(await screen.findByText(/inscription réussie/i)).toBeInTheDocument();
   });
 });

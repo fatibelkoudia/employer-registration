@@ -22,7 +22,7 @@ afterEach(() => {
 test('renders app without crashing', async () => {
   render(<App />);
   
-  // Wait for the initial axios call to complete
+  // Attend que l'appel axios initial se termine
   await waitFor(() => {
     expect(mockedAxios.get).toHaveBeenCalledWith("http://localhost:8000/users");
   });

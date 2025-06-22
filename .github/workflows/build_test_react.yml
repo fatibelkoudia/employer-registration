@@ -37,8 +37,10 @@ jobs:
 
       - name: Start Docker Stack for E2E
         run: |
-          docker compose up -d --build
-          sleep 20 # attendre que les services soient prêts
+          docker compose -f docker-compose.ci.yml up -d --build
+          sleep 60 # attendre que MySQL soit complètement prêt
+          docker compose -f docker-compose.ci.yml ps
+          docker compose -f docker-compose.ci.yml logs db
 
       - name: Run E2E tests with Cypress
         uses: cypress-io/github-action@v6
@@ -49,7 +51,7 @@ jobs:
 
       - name: Stop Docker Stack
         run: |
-          docker compose down
+          docker compose -f docker-compose.ci.yml down
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
