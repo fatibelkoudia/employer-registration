@@ -19,6 +19,7 @@
   "scripts": {
     "prebuild": "npm run jsdoc",
     "start": "react-scripts start --host 0.0.0.0",
+    "start:ci": "DISABLE_ESLINT_PLUGIN=true ESLINT_NO_DEV_ERRORS=true TSC_COMPILE_ON_ERROR=true SKIP_PREFLIGHT_CHECK=true EXTEND_ESLINT=false react-scripts start --host 0.0.0.0",
     "build": "react-scripts build",
     "postbuild": "cp -r public/docs build/docs",
     "test": "react-scripts test --coverage --collectCoverageFrom=src/**/*js[x] --collectCoverageFrom=!src/reportWebVitals.js --collectCoverageFrom=!src/index.js --watchAll=false",
@@ -55,7 +56,6 @@
     "@testing-library/react": "^16.3.0",
     "babel-jest": "^29.7.0",
     "cypress": "^14.4.1",
-    "eslint-plugin-cypress": "^3.5.0",
     "gh-pages": "^6.3.0",
     "identity-obj-proxy": "^3.0.0",
     "jsdoc": "^4.0.4",

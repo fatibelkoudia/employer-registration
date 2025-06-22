@@ -49,6 +49,9 @@ jobs:
           wait-on: "http://localhost:3000"
           wait-on-timeout: 120
           browser: chrome
+        env:
+          CYPRESS_viewportWidth: 1920
+          CYPRESS_viewportHeight: 1080
 
       - name: Stop Docker Stack
         run: |

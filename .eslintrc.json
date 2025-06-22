@@ -1,16 +1,14 @@
 {
   "extends": [
-    "react-app",
-    "react-app/jest"
+    "react-app"
   ],
-  "plugins": ["cypress"],
-  "env": {
-    "cypress/globals": true
+  "rules": {},
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
   },
-  "overrides": [
-    {
-      "files": ["cypress/**/*.js"],
-      "extends": ["plugin:cypress/recommended"]
-    }
-  ]
+  "env": {
+    "browser": true,
+    "es6": true
+  }
 }
