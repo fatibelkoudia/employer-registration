@@ -36,6 +36,25 @@ jobs:
       - name: Generate JSDoc
         working-directory: employer-registration
         run: npm run jsdoc
+        
+      - name: Start Docker Stack for E2E
+        run: |
+          cd employer-registration
+          docker compose up -d --build
+          sleep 20 # attendre que les services soient prêts
+
+      - name: Run E2E tests with Cypress
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: employer-registration
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 120
+          browser: chrome
+
+      - name: Stop Docker Stack
+        run: |
+          cd employer-registration
+          docker compose down
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
