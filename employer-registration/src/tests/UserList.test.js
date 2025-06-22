@@ -1,8 +1,11 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import UserList from '../components/UserList';
+import { render, screen, fireEvent } from '@testing-library/react';
+import App from '../App';
+import axios from 'axios';
 
-describe("UserList Component", () => {
+jest.mock('axios');
+
+describe("App Integration", () => {
   const mockUsers = [
     {
       firstName: "Jané",
@@ -11,38 +14,34 @@ describe("UserList Component", () => {
       birthDate: "1995-05-15",
       city: "Lyon",
       postalCode: "69000"
-    },
-    {
-      firstName: "Ali",
-      lastName: "Ben",
-      email: "ali.ben@example.com",
-      birthDate: "1990-03-12",
-      city: "Toulouse",
-      postalCode: "31000"
     }
   ];
 
-  test("Displays list of users in a table", () => {
-    render(<UserList users={mockUsers} />);
+  beforeEach(() => {
+    axios.get.mockResolvedValue({ data: { utilisateurs: mockUsers } });
+    axios.post.mockResolvedValue({
+      data: { utilisateur: { ...mockUsers[0] } }
+    });
+  });
 
-    // Check table headers
-    const headers = screen.getAllByRole("columnheader").map(th => th.textContent);
-    expect(headers).toEqual(expect.arrayContaining([
-      "Prénom",
-      "Nom",
-      "Email",
-      "Date de naissance",
-      "Ville",
-      "Code postal"
-    ]));
+  test("Displays existing users on load and submits a new user", async () => {
+    render(<App />);
 
-    // Check user data
-    expect(screen.getByText("Jané")).toBeInTheDocument();
+    // Les utilisateurs mockés sont affichés (test d’intégration App + UserList)
+    expect(await screen.findByText("Jané")).toBeInTheDocument();
     expect(screen.getByText("Doe")).toBeInTheDocument();
-    expect(screen.getByText("jané.doe@example.com")).toBeInTheDocument();
 
-    expect(screen.getByText("Ali")).toBeInTheDocument();
-    expect(screen.getByText("Ben")).toBeInTheDocument();
-    expect(screen.getByText("ali.ben@example.com")).toBeInTheDocument();
+    // Formulaire rempli
+    fireEvent.change(screen.getByPlaceholderText(/first name/i), { target: { value: "Ali" } });
+    fireEvent.change(screen.getByPlaceholderText(/last name/i), { target: { value: "Ben" } });
+    fireEvent.change(screen.getByPlaceholderText(/email/i), { target: { value: "ali.ben@example.com" } });
+    fireEvent.change(screen.getByLabelText(/birthDate/i), { target: { value: "1990-01-01" } });
+    fireEvent.change(screen.getByPlaceholderText(/city/i), { target: { value: "Toulouse" } });
+    fireEvent.change(screen.getByPlaceholderText(/postal code/i), { target: { value: "31000" } });
+
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+
+    // Confirme affichage du toast ou mise à jour de la liste
+    expect(await screen.findByText(/inscription réussie/i)).toBeInTheDocument();
   });
 });

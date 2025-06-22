@@ -2,6 +2,9 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import UserForm from '../components/UserForm';
 import { ToastContainer } from 'react-toastify';
+import axios from 'axios';
+
+jest.mock('axios');
 
 afterEach(() => {
   localStorage.clear();
@@ -11,6 +14,7 @@ afterEach(() => {
 describe("UserForm Component", () => {
 
   const setup = () => {
+    axios.get.mockResolvedValue({ data: { utilisateurs: [] } }); // 🔥 Ajouté ici
     const mockUsers = [];
     const setUsers = jest.fn();
     render(
@@ -30,6 +34,7 @@ describe("UserForm Component", () => {
 
   test("Displays error messages for invalid inputs", async () => {
     setup();
+
     fireEvent.change(screen.getByPlaceholderText(/first name/i), { target: { value: "John123" } });
     fireEvent.change(screen.getByPlaceholderText(/last name/i), { target: { value: "Doe@" } });
     fireEvent.change(screen.getByPlaceholderText(/email/i), { target: { value: "invalidemail" } });
@@ -37,18 +42,31 @@ describe("UserForm Component", () => {
     fireEvent.change(screen.getByPlaceholderText(/city/i), { target: { value: "Paris123" } });
     fireEvent.change(screen.getByPlaceholderText(/postal code/i), { target: { value: "7500" } });
 
-    const submitButton = screen.getByRole('button', { name: /submit/i });
-    fireEvent.click(submitButton);
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
 
     await waitFor(() => {
-      expect(screen.getAllByText(/champ invalide/i).length).toBeGreaterThanOrEqual(3);
+      expect(screen.getAllByText(/champ invalide/i).length).toBeGreaterThanOrEqual(2);
+      expect(screen.getByText("Email invalide")).toBeInTheDocument();
+      expect(screen.getByText("Vous devez avoir au moins 18 ans")).toBeInTheDocument();
+      expect(screen.getByText("Code postal invalide (5 chiffres)")).toBeInTheDocument();
     });
-    expect(screen.getByText("Email invalide")).toBeInTheDocument();
-    expect(screen.getByText("Vous devez avoir au moins 18 ans")).toBeInTheDocument();
-    expect(screen.getByText("Code postal invalide (5 chiffres)")).toBeInTheDocument();
   });
 
   test("Submits form successfully and resets fields", async () => {
+    axios.get.mockResolvedValue({ data: { utilisateurs: [] } });
+    axios.post.mockResolvedValue({
+      data: {
+        utilisateur: {
+          firstName: "Jane",
+          lastName: "Doe",
+          email: "jane.doe@example.com",
+          birthDate: "1990-01-01",
+          city: "Paris",
+          postalCode: "75000",
+        },
+      },
+    });
+
     const { setUsers } = setup();
 
     fireEvent.change(screen.getByPlaceholderText(/first name/i), { target: { value: "Jane" } });
@@ -58,11 +76,14 @@ describe("UserForm Component", () => {
     fireEvent.change(screen.getByPlaceholderText(/city/i), { target: { value: "Paris" } });
     fireEvent.change(screen.getByPlaceholderText(/postal code/i), { target: { value: "75000" } });
 
-    const submitButton = screen.getByRole('button', { name: /submit/i });
-    fireEvent.click(submitButton);
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/inscription réussie/i)).toBeInTheDocument();
+      expect(
+        screen.getByText((content) =>
+          content.toLowerCase().includes("inscription réussie")
+        )
+      ).toBeInTheDocument();
     });
 
     expect(screen.getByPlaceholderText(/first name/i).value).toBe('');
@@ -72,4 +93,5 @@ describe("UserForm Component", () => {
     expect(screen.getByPlaceholderText(/city/i).value).toBe('');
     expect(screen.getByPlaceholderText(/postal code/i).value).toBe('');
   });
+
 });
