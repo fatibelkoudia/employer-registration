@@ -13,8 +13,11 @@ describe('User Registration', () => {
 
   describe('Form Validation', () => {
     it('should show validation errors for empty form', () => {
-      cy.get('button[type="submit"]').click();
-      cy.waitForError();
+      cy.get('button[type="submit"]').should('be.disabled');
+      // Try to fill invalid data to trigger validation
+      cy.get('input[name="email"]').type('invalid-email').blur();
+      cy.get('input[name="postalCode"]').type('123').blur();
+      cy.get('button[type="submit"]').should('be.disabled');
     });
 
     it('should validate email format', () => {
@@ -90,7 +93,7 @@ describe('User Registration', () => {
         cy.get(`input[name="${field}"]`).should('be.visible');
       });
       
-      cy.get('button[type="submit"]').should('be.visible').and('contain', 'S\'inscrire');
+      cy.get('button[type="submit"]').should('be.visible').and('contain', 'Submit');
     });
 
     it('should allow form data entry', () => {

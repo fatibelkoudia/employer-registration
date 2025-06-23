@@ -67,6 +67,9 @@ jobs:
           wait-on: "http://localhost:3000, http://localhost:8000/users"
           wait-on-timeout: 180
           browser: chrome
+          component: false
+          record: false
+          publish-summary: true
         env:
           CYPRESS_viewportWidth: 1920
           CYPRESS_viewportHeight: 1080

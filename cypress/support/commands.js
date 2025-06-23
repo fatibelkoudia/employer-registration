@@ -75,13 +75,13 @@ Cypress.Commands.add('closeUserDetails', () => {
 
 Cypress.Commands.add('logoutAdmin', () => {
   cy.get('button').contains('Déconnexion').click();
-  cy.get('h1').contains('Inscription Employeur').should('be.visible');
+  cy.get('h1').contains('Système d\'Inscription').should('be.visible');
 });
 
 // Utility Commands
 Cypress.Commands.add('generateTestUser', () => {
   const timestamp = Date.now();
-  return {
+  const user = {
     firstName: 'Test',
     lastName: 'User',
     email: `test.user.${timestamp}@example.com`,
@@ -89,6 +89,7 @@ Cypress.Commands.add('generateTestUser', () => {
     city: 'Paris',
     postalCode: '75001'
   };
+  return cy.wrap(user);
 });
 
 Cypress.Commands.add('waitForSuccess', () => {

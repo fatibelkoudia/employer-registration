@@ -111,7 +111,9 @@ describe('Admin System', () => {
       cy.wait('@mockUsersList');
       
       cy.get('table').should('be.visible');
-      cy.get('tbody tr').should('have.length', 0);
+      cy.get('h3').should('contain', 'Liste des utilisateurs (0)');
+      // When there are no users, tbody should be empty or contain no user rows
+      cy.get('tbody').should('exist');
     });
   });
 

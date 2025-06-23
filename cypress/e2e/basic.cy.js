@@ -13,7 +13,7 @@ describe('Application Smoke Tests', () => {
 
   describe('Application Loading', () => {
     it('should load the main page successfully', () => {
-      cy.get('h1').contains('Inscription Employeur').should('be.visible');
+      cy.get('h1').contains('Système d\'Inscription').should('be.visible');
       cy.get('form').should('be.visible');
     });
 
@@ -56,8 +56,8 @@ describe('Application Smoke Tests', () => {
       cy.get('button').contains('Mode Admin').click();
       cy.get('h2').contains('Connexion Administrateur').should('be.visible');
       
-      cy.go('back');
-      cy.get('h1').contains('Inscription Employeur').should('be.visible');
+      cy.get('button').contains('Mode Utilisateur').click();
+      cy.get('h1').contains('Système d\'Inscription').should('be.visible');
     });
   });
 

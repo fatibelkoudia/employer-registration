@@ -97,11 +97,12 @@ describe('Complete User Management Workflow', () => {
       // Test user registration with backend down
       cy.intercept('POST', 'http://localhost:8000/users', { forceNetworkError: true }).as('userNetworkError');
       
-      const user = cy.generateTestUser();
-      cy.fillUserForm(user);
-      cy.get('button[type="submit"]').click();
-      cy.wait('@userNetworkError');
-      cy.waitForError();
+      cy.generateTestUser().then((user) => {
+        cy.fillUserForm(user);
+        cy.get('button[type="submit"]').click();
+        cy.wait('@userNetworkError');
+        cy.waitForError();
+      });
     });
 
     it('should handle admin API failures', () => {
@@ -142,9 +143,10 @@ describe('Complete User Management Workflow', () => {
         });
       }).as('slowResponse');
       
-      const user = cy.generateTestUser();
-      cy.registerUser(user);
-      cy.wait('@slowResponse', { timeout: 20000 });
+      cy.generateTestUser().then((user) => {
+        cy.registerUser(user);
+        cy.wait('@slowResponse', { timeout: 20000 });
+      });
     });
   });
 
