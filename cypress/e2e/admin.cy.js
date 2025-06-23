@@ -106,8 +106,15 @@ describe('Admin System', () => {
     });
 
     it('should handle empty users list', () => {
+      // Setup mock for empty users list
+      cy.mockSuccessfulLogin();
       cy.mockUsersList([]);
-      cy.reload();
+      
+      // Navigate to admin and login
+      cy.visit('/');
+      cy.get('button').contains('Mode Admin').click();
+      cy.loginAsAdmin();
+      cy.wait('@mockAdminLogin');
       cy.wait('@mockUsersList');
       
       cy.get('table').should('be.visible');
