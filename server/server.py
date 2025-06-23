@@ -99,3 +99,34 @@ async def create_user(request: Request):
             cursor.close()
         if conn:
             conn.close()
+
+@app.post("/users")
+async def create_user_local(request: Request):
+    conn = None
+    cursor = None
+    try:
+        data = await request.json()
+        first_name = data.get("firstName")
+        last_name = data.get("lastName")
+        email = data.get("email")
+        birth_date = data.get("birthDate")
+        city = data.get("city")
+        postal_code = data.get("postalCode")
+
+        conn = get_connection()
+        cursor = conn.cursor()
+        sql = """
+            INSERT INTO users (first_name, last_name, email, birth_date, city, postal_code)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(sql, (first_name, last_name, email, birth_date, city, postal_code))
+        conn.commit()
+        return {"utilisateur": data}
+    except Exception as e:
+        print(f"Erreur dans create_user: {e}")
+        return {"error": str(e)}
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
