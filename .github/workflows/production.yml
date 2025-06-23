@@ -15,8 +15,13 @@ on:
 jobs:
   build_test_and_deploy:
     permissions:
-      contents: write # Job-level permissions configuration starts here
-      pull-requests: write # write' access to pull requests
+      contents: read
+      pages: write
+      id-token: write
+      pull-requests: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -71,18 +76,19 @@ jobs:
           docker compose -f docker-compose.ci.yml down
 
       # Deploy Frontend to GitHub Pages
-      - name: Install gh-pages
-        run: npm install --save-dev gh-pages
-      - name: Configure Git for deployment
-        run: |
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
+      - name: Build React App for GitHub Pages
+        run: npm run build
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./build
       - name: Deploy to GitHub Pages
-        run: npm run deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: deployment
+        uses: actions/deploy-pages@v4
 
-      # Deploy Backend to Vercel  
+      # Deploy Backend to Vercel
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
