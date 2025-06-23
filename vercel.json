@@ -17,6 +17,7 @@
     "MYSQL_HOST": "@mysql_host_prod",
     "MYSQL_USER": "@mysql_user_prod", 
     "MYSQL_PASSWORD": "@mysql_password_prod",
-    "MYSQL_DATABASE": "@mysql_database_prod"
+    "MYSQL_DATABASE": "@mysql_database_prod",
+    "JWT_SECRET_KEY": "@jwt_secret_key"
   }
 }
