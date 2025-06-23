@@ -112,6 +112,8 @@ describe('Admin System', () => {
       
       // Navigate to admin and login
       cy.visit('/');
+      cy.wait(1000); // Ensure page is fully loaded
+      cy.get('h1').contains('Système d\'Inscription').should('be.visible'); // Ensure home page is loaded
       cy.goToAdminLogin();
       cy.loginAsAdmin();
       cy.wait('@mockAdminLogin');

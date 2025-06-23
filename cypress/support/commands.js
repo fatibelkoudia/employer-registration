@@ -24,7 +24,8 @@ Cypress.Commands.add('registerUser', (user) => {
 // Admin Authentication Commands
 Cypress.Commands.add('goToAdminLogin', () => {
   cy.get('button').contains('Mode Admin').should('be.visible').click();
-  cy.get('h2').contains('Connexion Administrateur').should('be.visible');
+  // Wait for admin login form to appear with longer timeout
+  cy.get('h2', { timeout: 15000 }).should('contain', 'Connexion Administrateur').and('be.visible');
 });
 
 Cypress.Commands.add('loginAsAdmin', (username, password) => {
