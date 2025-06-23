@@ -73,8 +73,10 @@ jobs:
       # Deploy Frontend to GitHub Pages
       - name: Install gh-pages
         run: npm install --save-dev gh-pages
-      - name: Build React App for GitHub Pages
-        run: npm run build
+      - name: Configure Git for deployment
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
       - name: Deploy to GitHub Pages
         run: npm run deploy
         env:
