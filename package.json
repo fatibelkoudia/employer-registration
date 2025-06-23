@@ -29,6 +29,13 @@
     "jsdoc": "jsdoc -R ./README.md -c ./jsdoc.config.json -r -d ./public/docs",
     "build-npm-ci": "NODE_ENV=production && rm -rf dist && mkdir dist && npx babel src --out-dir dist --copy-files",
     "cypress": "cypress open",
+    "cypress:run": "cypress run",
+    "test:e2e": "cypress run --headless",
+    "test:e2e:open": "cypress open",
+    "test:smoke": "cypress run --spec 'cypress/e2e/basic.cy.js' --headless",
+    "test:user": "cypress run --spec 'cypress/e2e/spec.cy.js' --headless", 
+    "test:admin": "cypress run --spec 'cypress/e2e/admin.cy.js' --headless",
+    "test:integration": "cypress run --spec 'cypress/e2e/integration.cy.js' --headless",
     "lint": "eslint './src/**/*.{js,jsx}'",
     "lint:fix": "eslint './src/**/*.{js,jsx}' --fix"
   },
