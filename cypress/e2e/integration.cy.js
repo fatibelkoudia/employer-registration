@@ -137,10 +137,7 @@ describe('Complete User Management Workflow', () => {
 
     it('should handle slow API responses', () => {
       cy.intercept('POST', 'http://localhost:8000/users', (req) => {
-        req.reply((res) => {
-          res.delay(5000); // 5 second delay
-          res.send({ statusCode: 200, body: { success: true } });
-        });
+        req.reply({ delay: 5000, statusCode: 200, body: { success: true } });
       }).as('slowResponse');
       
       cy.generateTestUser().then((user) => {
@@ -152,6 +149,8 @@ describe('Complete User Management Workflow', () => {
 
   describe('Application State Management', () => {
     it('should maintain form state during user interaction', () => {
+      cy.visit('/');
+      
       const partialUser = {
         firstName: 'John',
         lastName: 'Doe',
@@ -162,9 +161,9 @@ describe('Complete User Management Workflow', () => {
       cy.get('input[name="lastName"]').type(partialUser.lastName);
       cy.get('input[name="email"]').type(partialUser.email);
 
-      // Navigate to admin and back
-      cy.goToAdminLogin();
-      cy.go('back');
+      // Navigate to admin and back using the mode switcher
+      cy.get('button').contains('Mode Admin').click();
+      cy.get('button').contains('Mode Utilisateur').click();
 
       // Form should be reset after navigation
       cy.get('input[name="firstName"]').should('have.value', '');

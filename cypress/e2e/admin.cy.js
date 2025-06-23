@@ -112,7 +112,7 @@ describe('Admin System', () => {
       
       // Navigate to admin and login
       cy.visit('/');
-      cy.get('button').contains('Mode Admin').click();
+      cy.goToAdminLogin();
       cy.loginAsAdmin();
       cy.wait('@mockAdminLogin');
       cy.wait('@mockUsersList');
