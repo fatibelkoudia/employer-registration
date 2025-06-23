@@ -8,9 +8,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
   const [users, setUsers] = useState([]);
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
   useEffect(() => {
-    axios.get("http://localhost:8000/users")
+    axios.get(`${API_URL}/users`)
       .then(response => {
         // Check if response has utilisateurs array, otherwise use empty array
         if (response.data && Array.isArray(response.data.utilisateurs)) {
@@ -24,12 +25,12 @@ export default function App() {
         console.error("Erreur lors de la récupération des utilisateurs :", error);
         setUsers([]); // Ensure users is always an array even on error
       });
-  }, []);
+  }, [API_URL]);
 
   return (
     <>
       <ToastContainer position="top-center" autoClose={3000} />
-      <UserForm users={users} setUsers={setUsers} />
+      <UserForm users={users} setUsers={setUsers} apiUrl={API_URL} />
       <UserList users={users} />
     </>
   );

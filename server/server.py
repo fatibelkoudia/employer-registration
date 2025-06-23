@@ -8,7 +8,8 @@ app = FastAPI()
 # Configuration CORS pour permettre à React de se connecter
 origins = [
     "http://localhost:3000",
-    "employer-registration-fz.vercel.app",
+    "https://fatibelkoudia.github.io",
+    "https://employer-registration-fz.vercel.app",
     "https://*.vercel.app",
 ]
 
@@ -130,3 +131,6 @@ async def create_user_local(request: Request):
             cursor.close()
         if conn:
             conn.close()
+
+# For Vercel deployment
+handler = app

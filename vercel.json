@@ -3,35 +3,20 @@
   "builds": [
     {
       "src": "server/server.py",
-      "use": "@vercel/python",
-      "config": { "maxLambdaSize": "15mb" }
-    },
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "build" }
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "server/server.py"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "server/server.py"
     }
   ],
   "env": {
     "NODE_ENV": "production",
-    "MYSQL_HOST": "@mysql_host",
-    "MYSQL_USER": "@mysql_user", 
-    "MYSQL_ROOT_PASSWORD": "@mysql_password",
-    "MYSQL_DATABASE": "@mysql_database"
-  },
-  "functions": {
-    "server/server.py": {
-      "maxDuration": 10
-    }
+    "MYSQL_HOST": "@mysql_host_prod",
+    "MYSQL_USER": "@mysql_user_prod", 
+    "MYSQL_PASSWORD": "@mysql_password_prod",
+    "MYSQL_DATABASE": "@mysql_database_prod"
   }
 }

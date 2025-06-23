@@ -15,9 +15,10 @@ import {
  * @param {Object} props
  * @param {Array} props.users - liste des utilisateurs
  * @param {Function} props.setUsers - met à jour la liste
+ * @param {string} props.apiUrl - URL de l'API
  * @returns {JSX.Element} formulaire de saisie
  */
-function UserForm({ users, setUsers }) {
+function UserForm({ users, setUsers, apiUrl }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -30,7 +31,7 @@ function UserForm({ users, setUsers }) {
   // Récupère les utilisateurs au chargement
   useEffect(() => {
     axios
-      .get("http://localhost:8000/users")
+      .get(`${apiUrl}/users`)
       .then((res) => {
         setUsers(res.data.utilisateurs || []);
       })
@@ -38,7 +39,7 @@ function UserForm({ users, setUsers }) {
         console.error("Erreur de récupération :", err);
         toast.error("Impossible de charger les utilisateurs.");
       });
-  }, [setUsers]);
+  }, [apiUrl, setUsers]);
 
   useEffect(() => {
     setIsDisabled(
@@ -100,7 +101,7 @@ function UserForm({ users, setUsers }) {
     const newUser = { firstName, lastName, email, birthDate, city, postalCode };
 
     axios
-      .post("http://localhost:8000/users", newUser)
+      .post(`${apiUrl}/users`, newUser)
       .then((response) => {
         setUsers([...users, response.data.utilisateur]);
         toast.success("Inscription réussie !");
