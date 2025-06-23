@@ -26,7 +26,11 @@ def get_connection():
         # Debug pour voir les variables d'environnement
         host = os.getenv("MYSQL_HOST", "localhost")
         user = os.getenv("MYSQL_USER", "root")
-        password = os.getenv("MYSQL_ROOT_PASSWORD", "")
+        # Use MYSQL_PASSWORD for non-root user, MYSQL_ROOT_PASSWORD for root
+        if user == "root":
+            password = os.getenv("MYSQL_ROOT_PASSWORD", "")
+        else:
+            password = os.getenv("MYSQL_PASSWORD", "")
         database = os.getenv("MYSQL_DATABASE", "ynov_ci_test")
         
         print(f"Tentative connexion à: host={host}, user={user}, db={database}")

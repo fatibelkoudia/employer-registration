@@ -12,10 +12,17 @@ export default function App() {
   useEffect(() => {
     axios.get("http://localhost:8000/users")
       .then(response => {
-        setUsers(response.data.utilisateurs);
+        // Check if response has utilisateurs array, otherwise use empty array
+        if (response.data && Array.isArray(response.data.utilisateurs)) {
+          setUsers(response.data.utilisateurs);
+        } else {
+          console.warn("API returned unexpected format:", response.data);
+          setUsers([]);
+        }
       })
       .catch(error => {
         console.error("Erreur lors de la récupération des utilisateurs :", error);
+        setUsers([]); // Ensure users is always an array even on error
       });
   }, []);
 

@@ -37,7 +37,7 @@ services:
       - MYSQL_DATABASE=ynov_ci_test
       - MYSQL_HOST=db
       - MYSQL_USER=ci_test_user
-      - MYSQL_ROOT_PASSWORD=ci_test_password
+      - MYSQL_PASSWORD=ci_test_pass
     ports:
       - "8000:8000"
     depends_on:

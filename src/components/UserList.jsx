@@ -9,7 +9,7 @@ import "./UserListStyle.css";
  * @returns {JSX.Element} tableau des utilisateurs
  */
 function UserList({ users }) {
-  if (!users.length) return null;
+  if (!users || !Array.isArray(users) || !users.length) return null;
 
   return (
     <div className="user-list">
@@ -47,7 +47,7 @@ function UserList({ users }) {
 }
 
 UserList.propTypes = {
-  users: PropTypes.arrayOf(PropTypes.object).isRequired,
+  users: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default UserList;
