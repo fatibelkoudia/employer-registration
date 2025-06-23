@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import './AdminLoginStyle.css';
+import React, { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import "./AdminLoginStyle.css";
 
 /**
  * Composant de connexion administrateur
@@ -11,11 +11,11 @@ import './AdminLoginStyle.css';
  * @returns {JSX.Element} formulaire de connexion admin
  */
 function AdminLogin({ onLogin }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,21 +24,21 @@ function AdminLogin({ onLogin }) {
     try {
       const response = await axios.post(`${API_URL}/admin/login`, {
         username,
-        password
+        password,
       });
 
       if (response.data.success) {
         // Store admin token
-        localStorage.setItem('adminToken', response.data.token);
-        localStorage.setItem('adminUser', username);
-        toast.success('Connexion administrateur réussie !');
+        localStorage.setItem("adminToken", response.data.token);
+        localStorage.setItem("adminUser", username);
+        toast.success("Connexion administrateur réussie !");
         onLogin(response.data.token);
       } else {
-        toast.error('Identifiants incorrects');
+        toast.error("Identifiants incorrects");
       }
     } catch (error) {
-      console.error('Erreur de connexion admin:', error);
-      toast.error('Erreur de connexion administrateur');
+      console.error("Erreur de connexion admin:", error);
+      toast.error("Erreur de connexion administrateur");
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +59,7 @@ function AdminLogin({ onLogin }) {
             placeholder="Entrez votre nom d'utilisateur"
           />
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="password">Mot de passe:</label>
           <input
@@ -71,9 +71,9 @@ function AdminLogin({ onLogin }) {
             placeholder="Entrez votre mot de passe"
           />
         </div>
-        
+
         <button type="submit" disabled={isLoading}>
-          {isLoading ? 'Connexion...' : 'Se connecter'}
+          {isLoading ? "Connexion..." : "Se connecter"}
         </button>
       </form>
     </div>

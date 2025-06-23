@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import './AdminDashboardStyle.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import "./AdminDashboardStyle.css";
 
 /**
  * Tableau de bord administrateur avec gestion des utilisateurs
@@ -16,22 +16,25 @@ function AdminDashboard({ users, setUsers, onLogout }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-  const adminToken = localStorage.getItem('adminToken');
-  const adminUser = localStorage.getItem('adminUser');
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+  const adminToken = localStorage.getItem("adminToken");
+  const adminUser = localStorage.getItem("adminUser");
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(`${API_URL}/admin/users`, {
           headers: {
-            'Authorization': `Bearer ${adminToken}`
-          }
+            Authorization: `Bearer ${adminToken}`,
+          },
         });
         setUsers(response.data.utilisateurs || []);
       } catch (error) {
-        console.error('Erreur lors de la récupération des utilisateurs:', error);
-        toast.error('Erreur lors du chargement des utilisateurs');
+        console.error(
+          "Erreur lors de la récupération des utilisateurs:",
+          error
+        );
+        toast.error("Erreur lors du chargement des utilisateurs");
       }
     };
 
@@ -39,7 +42,9 @@ function AdminDashboard({ users, setUsers, onLogout }) {
   }, [API_URL, adminToken, setUsers]);
 
   const deleteUser = async (userId) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+    if (
+      !window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")
+    ) {
       return;
     }
 
@@ -47,16 +52,16 @@ function AdminDashboard({ users, setUsers, onLogout }) {
     try {
       await axios.delete(`${API_URL}/admin/users/${userId}`, {
         headers: {
-          'Authorization': `Bearer ${adminToken}`
-        }
+          Authorization: `Bearer ${adminToken}`,
+        },
       });
-      
-      setUsers(users.filter(user => user.id !== userId));
+
+      setUsers(users.filter((user) => user.id !== userId));
       setSelectedUser(null);
-      toast.success('Utilisateur supprimé avec succès');
+      toast.success("Utilisateur supprimé avec succès");
     } catch (error) {
-      console.error('Erreur lors de la suppression:', error);
-      toast.error('Erreur lors de la suppression de l\'utilisateur');
+      console.error("Erreur lors de la suppression:", error);
+      toast.error("Erreur lors de la suppression de l'utilisateur");
     } finally {
       setIsLoading(false);
     }
@@ -67,10 +72,10 @@ function AdminDashboard({ users, setUsers, onLogout }) {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminUser');
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminUser");
     onLogout();
-    toast.info('Déconnexion administrateur');
+    toast.info("Déconnexion administrateur");
   };
 
   return (
@@ -78,7 +83,9 @@ function AdminDashboard({ users, setUsers, onLogout }) {
       <div className="admin-header">
         <h2>Tableau de bord Administrateur</h2>
         <div className="admin-info">
-          <span>Connecté en tant que: <strong>{adminUser}</strong></span>
+          <span>
+            Connecté en tant que: <strong>{adminUser}</strong>
+          </span>
           <button onClick={handleLogout} className="logout-btn">
             Déconnexion
           </button>
@@ -107,13 +114,13 @@ function AdminDashboard({ users, setUsers, onLogout }) {
                     <td>{user.lastName || user.last_name}</td>
                     <td>{user.email}</td>
                     <td className="actions">
-                      <button 
+                      <button
                         onClick={() => viewUserDetails(user)}
                         className="view-btn"
                       >
                         Voir détails
                       </button>
-                      <button 
+                      <button
                         onClick={() => deleteUser(user.id)}
                         className="delete-btn"
                         disabled={isLoading}
@@ -132,19 +139,37 @@ function AdminDashboard({ users, setUsers, onLogout }) {
           <div className="user-details">
             <h3>Détails de l'utilisateur</h3>
             <div className="details-content">
-              <p><strong>ID:</strong> {selectedUser.id}</p>
-              <p><strong>Prénom:</strong> {selectedUser.firstName || selectedUser.first_name}</p>
-              <p><strong>Nom:</strong> {selectedUser.lastName || selectedUser.last_name}</p>
-              <p><strong>Email:</strong> {selectedUser.email}</p>
-              <p><strong>Date de naissance:</strong> {selectedUser.birthDate || selectedUser.birth_date}</p>
-              <p><strong>Ville:</strong> {selectedUser.city}</p>
-              <p><strong>Code postal:</strong> {selectedUser.postalCode || selectedUser.postal_code}</p>
-              <p><strong>Date d'inscription:</strong> {selectedUser.created_at || 'Non disponible'}</p>
+              <p>
+                <strong>ID:</strong> {selectedUser.id}
+              </p>
+              <p>
+                <strong>Prénom:</strong>{" "}
+                {selectedUser.firstName || selectedUser.first_name}
+              </p>
+              <p>
+                <strong>Nom:</strong>{" "}
+                {selectedUser.lastName || selectedUser.last_name}
+              </p>
+              <p>
+                <strong>Email:</strong> {selectedUser.email}
+              </p>
+              <p>
+                <strong>Date de naissance:</strong>{" "}
+                {selectedUser.birthDate || selectedUser.birth_date}
+              </p>
+              <p>
+                <strong>Ville:</strong> {selectedUser.city}
+              </p>
+              <p>
+                <strong>Code postal:</strong>{" "}
+                {selectedUser.postalCode || selectedUser.postal_code}
+              </p>
+              <p>
+                <strong>Date d'inscription:</strong>{" "}
+                {selectedUser.created_at || "Non disponible"}
+              </p>
             </div>
-            <button 
-              onClick={() => setSelectedUser(null)}
-              className="close-btn"
-            >
+            <button onClick={() => setSelectedUser(null)} className="close-btn">
               Fermer
             </button>
           </div>
