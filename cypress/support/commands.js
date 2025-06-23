@@ -76,6 +76,7 @@ Cypress.Commands.add('closeUserDetails', () => {
 
 Cypress.Commands.add('logoutAdmin', () => {
   cy.get('button').contains('Déconnexion').click();
+  cy.clearLocalStorage(); // Ensure localStorage is cleared
   cy.get('h1').contains('Système d\'Inscription').should('be.visible');
 });
 

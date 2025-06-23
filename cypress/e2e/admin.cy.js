@@ -106,13 +106,16 @@ describe('Admin System', () => {
     });
 
     it('should handle empty users list', () => {
+      // Clear any existing admin session to start fresh
+      cy.clearLocalStorage();
+      
       // Setup mock for empty users list
       cy.mockSuccessfulLogin();
       cy.mockUsersList([]);
       
       // Navigate to admin and login
       cy.visit('/');
-      cy.wait(1000); // Ensure page is fully loaded
+      cy.wait(1000); // Ensure page is fully loaded and React processes localStorage clear
       cy.get('h1').contains('Système d\'Inscription').should('be.visible'); // Ensure home page is loaded
       cy.goToAdminLogin();
       cy.loginAsAdmin();
