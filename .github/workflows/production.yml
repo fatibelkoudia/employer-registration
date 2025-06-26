@@ -48,15 +48,17 @@ jobs:
           docker compose -f docker-compose.ci.yml ps
           docker compose -f docker-compose.ci.yml logs db
           echo "On vérifie que l'API FastAPI répond..."
-          timeout 120 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:8000/users)" != "200" ]]; do sleep 2; done' || true
+          timeout 120 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:8000/api/users)" != "200" ]]; do sleep 2; done' || true
           echo "API check terminé"
 
       - name: Debug API connectivity
         run: |
           echo "Test des endpoints..."
           curl -f http://localhost:8000/ || (echo "Endpoint racine KO" && exit 1)
+          echo "Test API root endpoint..."
+          curl -f http://localhost:8000/api/ || (echo "Endpoint API racine KO" && exit 1)
           echo "Test users endpoint..."
-          curl -f http://localhost:8000/users || (echo "Endpoint users KO" && exit 1)
+          curl -f http://localhost:8000/api/users || (echo "Endpoint users KO" && exit 1)
           echo "Test de React..."
           curl -I http://localhost:3000 || (echo "React app KO" && exit 1)
 
@@ -64,7 +66,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           install: false
-          wait-on: "http://localhost:3000, http://localhost:8000/users"
+          wait-on: "http://localhost:3000, http://localhost:8000/api/users"
           wait-on-timeout: 180
           browser: chrome
           component: false
