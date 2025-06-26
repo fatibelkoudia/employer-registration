@@ -67,7 +67,7 @@ describe('User Registration', () => {
     });
 
     it('should handle network errors gracefully', () => {
-      cy.intercept('POST', 'http://localhost:8000/users', { forceNetworkError: true }).as('networkError');
+      cy.intercept('POST', 'http://localhost:8000/api/users', { forceNetworkError: true }).as('networkError');
       
       const user = {
         firstName: 'Test',

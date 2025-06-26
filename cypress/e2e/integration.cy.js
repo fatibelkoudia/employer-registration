@@ -95,7 +95,7 @@ describe('Complete User Management Workflow', () => {
   describe('Error Handling and Edge Cases', () => {
     it('should handle backend unavailable scenarios', () => {
       // Test user registration with backend down
-      cy.intercept('POST', 'http://localhost:8000/users', { forceNetworkError: true }).as('userNetworkError');
+      cy.intercept('POST', 'http://localhost:8000/api/users', { forceNetworkError: true }).as('userNetworkError');
       
       cy.generateTestUser().then((user) => {
         cy.fillUserForm(user);
@@ -107,7 +107,7 @@ describe('Complete User Management Workflow', () => {
 
     it('should handle admin API failures', () => {
       // Test admin login with backend returning errors
-      cy.intercept('POST', 'http://localhost:8000/admin/login', {
+      cy.intercept('POST', 'http://localhost:8000/api/admin/login', {
         statusCode: 500,
         body: { error: 'Internal server error' }
       }).as('adminError');
@@ -122,7 +122,7 @@ describe('Complete User Management Workflow', () => {
 
     it('should handle malformed API responses', () => {
       cy.mockSuccessfulLogin();
-      cy.intercept('GET', 'http://localhost:8000/admin/users', {
+      cy.intercept('GET', 'http://localhost:8000/api/admin/users', {
         statusCode: 200,
         body: { invalid: 'response' } // Missing utilisateurs array
       }).as('malformedResponse');
@@ -136,7 +136,7 @@ describe('Complete User Management Workflow', () => {
     });
 
     it('should handle slow API responses', () => {
-      cy.intercept('POST', 'http://localhost:8000/users', (req) => {
+      cy.intercept('POST', 'http://localhost:8000/api/users', (req) => {
         req.reply({ delay: 5000, statusCode: 200, body: { success: true } });
       }).as('slowResponse');
       

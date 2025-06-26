@@ -39,7 +39,7 @@ describe('Admin System', () => {
     });
 
     it('should handle network errors during login', () => {
-      cy.intercept('POST', 'http://localhost:8000/admin/login', { forceNetworkError: true }).as('networkError');
+      cy.intercept('POST', 'http://localhost:8000/api/admin/login', { forceNetworkError: true }).as('networkError');
       
       cy.goToAdminLogin();
       cy.get('input[id="username"]').type('admin');

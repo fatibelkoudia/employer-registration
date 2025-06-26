@@ -11,7 +11,7 @@ Cypress.Commands.add('fillUserForm', (user) => {
 });
 
 Cypress.Commands.add('submitUserForm', () => {
-  cy.intercept('POST', `${Cypress.env('apiUrl')}/users`).as('createUser');
+  cy.intercept('POST', `${Cypress.env('apiUrl')}/api/users`).as('createUser');
   cy.get('button[type="submit"]').should('be.visible').click();
   return cy.wait('@createUser', { timeout: 20000 });
 });
@@ -32,7 +32,7 @@ Cypress.Commands.add('loginAsAdmin', (username, password) => {
   const adminUsername = username || Cypress.env('adminUsername') || 'admin';
   const adminPassword = password || Cypress.env('adminPassword') || 'admin123';
   
-  cy.intercept('POST', `${Cypress.env('apiUrl')}/admin/login`).as('adminLogin');
+  cy.intercept('POST', `${Cypress.env('apiUrl')}/api/admin/login`).as('adminLogin');
   
   cy.get('input[id="username"]').clear().type(adminUsername);
   cy.get('input[id="password"]').clear().type(adminPassword);
@@ -48,7 +48,7 @@ Cypress.Commands.add('accessAdminDashboard', (username, password) => {
 
 // Admin Dashboard Commands
 Cypress.Commands.add('waitForUsersList', () => {
-  cy.intercept('GET', `${Cypress.env('apiUrl')}/admin/users`).as('getUsers');
+  cy.intercept('GET', `${Cypress.env('apiUrl')}/api/admin/users`).as('getUsers');
   cy.get('h2').contains('Tableau de bord Administrateur', { timeout: 10000 }).should('be.visible');
   return cy.wait('@getUsers', { timeout: 15000 });
 });
