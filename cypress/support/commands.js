@@ -38,7 +38,13 @@ Cypress.Commands.add('loginAsAdmin', (username, password) => {
   cy.get('input[id="password"]').clear().type(adminPassword);
   cy.get('button[type="submit"]').click();
   
-  return cy.wait('@adminLogin', { timeout: 15000 });
+  return cy.wait('@adminLogin', { timeout: 15000 }).then((interception) => {
+    // Give the app time to process the successful login and redirect
+    if (interception.response && interception.response.statusCode === 200) {
+      cy.wait(2000); // Wait for dashboard to start loading
+    }
+    return interception;
+  });
 });
 
 Cypress.Commands.add('accessAdminDashboard', (username, password) => {
@@ -49,7 +55,14 @@ Cypress.Commands.add('accessAdminDashboard', (username, password) => {
 // Admin Dashboard Commands
 Cypress.Commands.add('waitForUsersList', () => {
   cy.intercept('GET', `${Cypress.env('apiUrl')}/api/admin/users`).as('getUsers');
-  cy.get('h2').contains('Tableau de bord Administrateur', { timeout: 10000 }).should('be.visible');
+  
+  // Wait for the admin dashboard container to appear first
+  cy.get('.admin-dashboard', { timeout: 15000 }).should('be.visible');
+  
+  // Then wait for the specific h2 element with the title
+  cy.get('h2', { timeout: 15000 }).contains('Tableau de bord Administrateur').should('be.visible');
+  
+  // Then wait for the users API call
   return cy.wait('@getUsers', { timeout: 15000 });
 });
 

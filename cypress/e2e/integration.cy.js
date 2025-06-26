@@ -24,49 +24,32 @@ describe('Complete User Management Workflow', () => {
       };
 
       cy.log('Step 1: Registering new user');
-      cy.registerUser(testUser).then((regInterception) => {
-        if (regInterception.response && regInterception.response.statusCode === 200) {
-          cy.waitForSuccess();
-          cy.log('User registration successful');
+      cy.registerUser(testUser);
+      cy.waitForSuccess();
+      cy.log('User registration successful');
 
-          // Step 2: Access admin dashboard
-          cy.log('Step 2: Accessing admin dashboard');
-          cy.accessAdminDashboard().then((loginInterception) => {
-            if (loginInterception.response && loginInterception.response.statusCode === 200) {
-              cy.log('Admin login successful');
+      // Step 2: Access admin dashboard
+      cy.log('Step 2: Accessing admin dashboard');
+      cy.accessAdminDashboard();
+      cy.log('Admin login successful');
 
-              // Step 3: Verify user appears in admin list
-              cy.log('Step 3: Verifying user in admin list');
-              cy.waitForUsersList().then((usersInterception) => {
-                if (usersInterception.response && usersInterception.response.statusCode === 200) {
-                  cy.log('Users list loaded');
-                  cy.verifyUserInList(testUser);
+      // Step 3: Verify user appears in admin list
+      cy.log('Step 3: Verifying user in admin list');
+      cy.waitForUsersList();
+      cy.log('Users list loaded');
+      cy.verifyUserInList(testUser);
 
-                  // Step 4: View user details
-                  cy.log('Step 4: Viewing user details');
-                  cy.viewUserDetails(testUser.email);
-                  cy.get('.user-details').should('contain', testUser.firstName);
-                  cy.get('.user-details').should('contain', testUser.city);
-                  cy.closeUserDetails();
+      // Step 4: View user details
+      cy.log('Step 4: Viewing user details');
+      cy.viewUserDetails(testUser.email);
+      cy.get('.user-details').should('contain', testUser.firstName);
+      cy.get('.user-details').should('contain', testUser.city);
+      cy.closeUserDetails();
 
-                  // Step 5: Logout admin
-                  cy.log('Step 5: Admin logout');
-                  cy.logoutAdmin();
-                  cy.log('Complete workflow successful');
-                } else {
-                  cy.log('Users list failed to load');
-                }
-              });
-            } else {
-              cy.log('Admin login failed');
-              cy.waitForError();
-            }
-          });
-        } else {
-          cy.log('User registration failed');
-          cy.waitForError();
-        }
-      });
+      // Step 5: Logout admin
+      cy.log('Step 5: Admin logout');
+      cy.logoutAdmin();
+      cy.log('Complete workflow successful');
     });
 
     it('should handle user registration with existing email', () => {
