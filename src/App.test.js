@@ -24,6 +24,6 @@ test('renders app without crashing', async () => {
   
   // Attend que l'appel axios initial se termine
   await waitFor(() => {
-    expect(mockedAxios.get).toHaveBeenCalledWith("http://localhost:8000/users");
+    expect(mockedAxios.get).toHaveBeenCalledWith("http://localhost:8000/api/users");
   });
 });

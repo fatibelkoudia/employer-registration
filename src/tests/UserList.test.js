@@ -41,7 +41,7 @@ describe("App Integration", () => {
 
     // Attend que l'appel axios initial se termine et que les utilisateurs s'affichent
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith("http://localhost:8000/users");
+      expect(mockedAxios.get).toHaveBeenCalledWith("http://localhost:8000/api/users");
     });
 
     // Les utilisateurs de test s'affichent bien

@@ -42,7 +42,7 @@ describe('Admin Authentication Tests', () => {
 
       await waitFor(() => {
         expect(mockedAxios.post).toHaveBeenCalledWith(
-          'http://localhost:8000/admin/login',
+          'http://localhost:8000/api/admin/login',
           { username: 'admin', password: 'admin123' }
         );
         expect(mockOnLogin).toHaveBeenCalledWith('fake-jwt-token');
@@ -140,7 +140,7 @@ describe('Admin Authentication Tests', () => {
 
       await waitFor(() => {
         expect(mockedAxios.delete).toHaveBeenCalledWith(
-          'http://localhost:8000/admin/users/1',
+          'http://localhost:8000/api/admin/users/1',
           { headers: { 'Authorization': 'Bearer fake-token' } }
         );
       });
