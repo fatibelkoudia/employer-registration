@@ -23,7 +23,7 @@ function AdminDashboard({ users, setUsers, onLogout }) {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${API_URL}/admin/users`, {
+        const response = await axios.get(`${API_URL}/api/admin/users`, {
           headers: {
             Authorization: `Bearer ${adminToken}`,
           },
@@ -50,7 +50,7 @@ function AdminDashboard({ users, setUsers, onLogout }) {
 
     setIsLoading(true);
     try {
-      await axios.delete(`${API_URL}/admin/users/${userId}`, {
+      await axios.delete(`${API_URL}/api/admin/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${adminToken}`,
         },

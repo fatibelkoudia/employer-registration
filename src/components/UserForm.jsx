@@ -31,7 +31,7 @@ function UserForm({ users, setUsers, apiUrl }) {
   // Récupère les utilisateurs au chargement
   useEffect(() => {
     axios
-      .get(`${apiUrl}/users`)
+      .get(`${apiUrl}/api/users`)
       .then((res) => {
         setUsers(res.data.utilisateurs || []);
       })
@@ -101,7 +101,7 @@ function UserForm({ users, setUsers, apiUrl }) {
     const newUser = { firstName, lastName, email, birthDate, city, postalCode };
 
     axios
-      .post(`${apiUrl}/users`, newUser)
+      .post(`${apiUrl}/api/users`, newUser)
       .then((response) => {
         setUsers([...users, response.data.utilisateur]);
         toast.success("Inscription réussie !");
