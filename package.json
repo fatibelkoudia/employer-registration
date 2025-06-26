@@ -22,6 +22,7 @@
     "start:ci": "DISABLE_ESLINT_PLUGIN=true ESLINT_NO_DEV_ERRORS=true TSC_COMPILE_ON_ERROR=true SKIP_PREFLIGHT_CHECK=true EXTEND_ESLINT=false react-scripts start --host 0.0.0.0",
     "build": "react-scripts build",
     "postbuild": "cp -r public/docs build/docs",
+    "vercel-build": "npm run build",
     "test": "react-scripts test --coverage --collectCoverageFrom=src/**/*js[x] --collectCoverageFrom=!src/reportWebVitals.js --collectCoverageFrom=!src/index.js --watchAll=false",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",

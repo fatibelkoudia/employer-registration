@@ -23,7 +23,7 @@ export default function App() {
 
     // Load users for regular view
     if (!isAdminMode) {
-      axios.get(`${API_URL}/users`)
+      axios.get(`${API_URL}/api/users`)
         .then(response => {
           // Check if response has utilisateurs array, otherwise use empty array
           if (response.data && Array.isArray(response.data.utilisateurs)) {

@@ -2,14 +2,26 @@
   "version": 2,
   "builds": [
     {
+      "src": "package.json",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["build/**"]
+      }
+    },
+    {
       "src": "server/server.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/api/(.*)",
       "dest": "server/server.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/build/$1"
     }
-  ]
+  ],
+  "outputDirectory": "build"
 }

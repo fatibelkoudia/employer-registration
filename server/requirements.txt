@@ -1,4 +1,5 @@
 mysql-connector-python
 fastapi
-uvicorn
+uvicorn[standard]
 PyJWT
+python-multipart

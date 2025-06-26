@@ -56,6 +56,30 @@ def get_connection():
 async def root():
     return {"message": "API is running"}
 
+@app.get("/api/")
+async def api_root():
+    return {"message": "API is running", "status": "ok", "version": "1.0"}
+
+@app.get("/api/health")
+async def health_check():
+    """Health check endpoint for debugging"""
+    try:
+        # Test environment variables
+        env_vars = {
+            "MYSQL_HOST": os.getenv("MYSQL_HOST", "NOT_SET"),
+            "MYSQL_USER": os.getenv("MYSQL_USER", "NOT_SET"),
+            "MYSQL_DATABASE": os.getenv("MYSQL_DATABASE", "NOT_SET"),
+            "JWT_SECRET_KEY": "SET" if os.getenv("JWT_SECRET_KEY") else "NOT_SET"
+        }
+        
+        return {
+            "status": "healthy",
+            "environment": env_vars,
+            "message": "All systems operational"
+        }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
 @app.get("/users")
 async def get_users():
     conn = None
@@ -74,6 +98,25 @@ async def get_users():
             cursor.close()
         if conn:
             conn.close()
+
+@app.get("/api/users")
+async def get_users_api():
+    """Get users with proper error handling for Vercel"""
+    try:
+        # Test database connection first
+        conn = get_connection()
+        if conn:
+            conn.close()
+            return await get_users()
+        else:
+            return {"error": "Database connection failed", "utilisateurs": []}
+    except Exception as e:
+        print(f"Database error: {e}")
+        return {
+            "error": "Database unavailable", 
+            "message": str(e),
+            "utilisateurs": []
+        }
 
 @app.post("/users")
 async def create_user(request: Request):
@@ -106,8 +149,8 @@ async def create_user(request: Request):
         if conn:
             conn.close()
 
-@app.post("/users")
-async def create_user_local(request: Request):
+@app.post("/users") 
+async def create_user(request: Request):
     conn = None
     cursor = None
     try:
@@ -252,6 +295,23 @@ async def delete_user(user_id: int, current_admin: str = Depends(verify_admin_to
             cursor.close()
         if conn:
             conn.close()
+
+# API Routes with /api prefix for Vercel deployment
+@app.post("/api/users")
+async def create_user_api(request: Request):
+    return await create_user(request)
+
+@app.post("/api/admin/login")
+async def admin_login_api(request: Request):
+    return await admin_login(request)
+
+@app.get("/api/admin/users")
+async def get_admin_users_api(current_admin: str = Depends(verify_admin_token)):
+    return await get_admin_users(current_admin)
+
+@app.delete("/api/admin/users/{user_id}")
+async def delete_user_api(user_id: int, current_admin: str = Depends(verify_admin_token)):
+    return await delete_user(user_id, current_admin)
 
 # For Vercel deployment
 handler = app
