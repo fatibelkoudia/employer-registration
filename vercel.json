@@ -2,13 +2,6 @@
   "version": 2,
   "builds": [
     {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
-    },
-    {
       "src": "server/server.py",
       "use": "@vercel/python"
     }
@@ -17,18 +10,6 @@
     {
       "src": "/api/(.*)",
       "dest": "server/server.py"
-    },
-    {
-      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|ico|svg))",
-      "dest": "/build/$1"
-    },
-    {
-      "src": "/",
-      "dest": "/build/index.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/build/index.html"
     }
   ]
 }
