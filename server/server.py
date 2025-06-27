@@ -243,10 +243,10 @@ async def delete_user(user_id: int, current_admin: str = Depends(verify_admin_to
         print(f"Erreur delete_user: {e}")
         return {"error": str(e)}
 
-# Pour le déploiement Vercel
-handler = app
+# # Pour le déploiement Vercel
+# handler = app
 
-# Pour le développement local
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# # Pour le développement local
+# if __name__ == "__main__":
+#     import uvicorn
+#     uvicorn.run(app, host="0.0.0.0", port=8000)
