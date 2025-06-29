@@ -96,8 +96,25 @@ jobs:
       # Deploy Backend to Vercel
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
+      - name: Set proper permissions
+        run: |
+          # Ensure proper ownership of all files
+          sudo chown -R $(whoami):$(whoami) . || true
+          # Set proper permissions
+          chmod -R 755 . || true
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Clean Python Cache Files Before Build
+        run: |
+          # Remove Python cache files with force (in case Docker created them)
+          sudo find . -type f -name "*.pyc" -delete || true
+          sudo find . -type d -name "__pycache__" -exec rm -rf {} + || true
+          # Also clean up any other Python artifacts that might cause issues
+          sudo rm -rf server/__pycache__ || true
+          sudo rm -rf server/*.pyc || true
+          # List contents to verify cleanup
+          echo "Server directory contents after cleanup:"
+          ls -la server/ || true
       - name: Build Project Artifacts
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Backend to Vercel
