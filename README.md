@@ -1,83 +1,136 @@
-# Système d'Inscription d'Employés
+# Employee Registration System
 
-Un système d'inscription d'employés full-stack avec frontend React, backend Python et base de données MySQL.
+Full-stack employee registration with React frontend, Python backend, and MySQL database.
 
-## Liens
+## Live Links
 
-- **Frontend**: [https://fatibelkoudia.github.io/employer-registration/](https://fatibelkoudia.github.io/employer-registration/)
-- **Backend API**: [https://employer-registration-fz.vercel.app/](https://employer-registration-fz.vercel.app/)
-- **Repository**: [https://github.com/fatibelkoudia/employer-registration](https://github.com/fatibelkoudia/employer-registration)
-- **Documentation**: [https://fatibelkoudia.github.io/employer-registration/docs](https://fatibelkoudia.github.io/employer-registration/docs)
+- **Frontend**: https://fatibelkoudia.github.io/employer-registration/
+- **Backend API**: https://employer-registration-nr19kmot4.vercel.app/
 
-## Fonctionnalités
+## Features
 
-### Frontend
+- User registration with real-time validation
+- Admin dashboard with user management
+- JWT authentication
+- Responsive design
 
-- Validation en temps réel avec Material-UI
-- Dashboard administrateur avec gestion des utilisateurs
-- Design responsive
+## Tech Stack
 
-### Backend
+- **Frontend**: React, Material-UI
+- **Backend**: Python FastAPI, JWT
+- **Database**: MySQL (AlwaysData)
+- **Deployment**: Vercel, GitHub Pages
 
-- API RESTful avec authentification JWT
-- Base de données MySQL hébergée sur AlwaysData
-- Opérations CRUD complètes sur les utilisateurs
+## Local Development
 
-### Tests
+### Prerequisites
 
-- Couverture de tests 97%+ (unitaires, intégration, E2E)
-- Tests Cypress pour les flux utilisateurs complets
-- Tests Jest pour les composants et utilitaires
+- Node.js
+- Python 3.9+
+- MySQL
 
-## Démarrage Rapide
-
-### Avec Docker
+### Frontend Setup
 
 ```bash
-git clone https://github.com/fatibelkoudia/employer-registration.git
-cd employer-registration
-docker-compose up --build
-```
+npm install
 
-### Installation Locale
+# Create frontend environment file
+cp .env.example .env.local
+# Edit .env.local if needed (default points to localhost:8000)
 
-```bash
-npm install --legacy-peer-deps
 npm start
 ```
 
-## Stack Technique
+### Backend Setup
 
-- **Frontend**: React 19, Material-UI, Axios
-- **Backend**: Python/Flask, JWT, bcrypt
-- **Base de données**: MySQL
-- **Tests**: Cypress, Jest
-- **DevOps**: Docker, GitHub Actions, Vercel, GitHub Pages
+```bash
+cd server
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 
-## Scripts Principaux
+# Create backend environment file
+cp .env.example .env
+# Edit .env with your MySQL credentials
 
-| Script              | Description                               |
-| ------------------- | ----------------------------------------- |
-| `npm start`         | Lance l'application en mode développement |
-| `npm test`          | Exécute les tests unitaires               |
-| `npm run test:e2e`  | Lance les tests E2E avec Cypress          |
-| `npm run build`     | Build de production                       |
-| `docker-compose up` | Démarre la stack complète                 |
+# Start server
+uvicorn server:app --reload
+```
 
-## Règles de Validation
+### Database Setup
 
-| Champ                 | Règle                             |
-| --------------------- | --------------------------------- |
-| **Prénom/Nom**        | Obligatoire, lettres uniquement   |
-| **Email**             | Adresse email valide              |
-| **Date de Naissance** | Au moins 18 ans                   |
-| **Code Postal**       | Code postal français (5 chiffres) |
+```bash
+# Create local database
+mysql -u root -p
+CREATE DATABASE ynov_ci_local;
+exit;
 
-## Déploiement
+# Run migration
+mysql -u root -p < sqlfiles/local_migration.sql
+```
 
-- **Frontend**: GitHub Pages avec déploiement automatique
-- **Backend**: Vercel avec fonctions serverless Python
-- **Base de données**: MySQL sur AlwaysData
-- **CI/CD**: GitHub Actions pour tests et déploiement
+## Production Deployment
 
----
+### Vercel (Backend)
+
+1. Connect GitHub repo to Vercel
+2. Set environment variables in Vercel dashboard:
+   - `MYSQL_HOST` - Database host
+   - `MYSQL_USER` - Database username
+   - `MYSQL_PASSWORD` - Database password
+   - `MYSQL_DATABASE` - Database name
+   - `JWT_SECRET_KEY` - Random secret key for JWT tokens
+3. Deploy automatically on push
+
+**Note**: See `server/.env.example` for reference values
+
+### GitHub Pages (Frontend)
+
+Deploys automatically on push to main branch.
+
+## API Endpoints
+
+| Method | Endpoint                | Description         |
+| ------ | ----------------------- | ------------------- |
+| GET    | `/api/health`           | Health check        |
+| GET    | `/api/users`            | Get all users       |
+| POST   | `/api/users`            | Create user         |
+| POST   | `/api/admin/login`      | Admin login         |
+| DELETE | `/api/admin/users/{id}` | Delete user (admin) |
+
+## Validation Rules
+
+| Field           | Rule                       |
+| --------------- | -------------------------- |
+| **Name**        | Required, letters only     |
+| **Email**       | Valid email format         |
+| **Birth Date**  | Must be 18+ years old      |
+| **Postal Code** | 5-digit French postal code |
+
+## Testing
+
+```bash
+# Frontend tests
+npm test
+
+# Backend tests
+cd server
+python -m pytest
+
+# E2E tests
+npm run test:e2e
+```
+
+## Scripts
+
+| Script             | Description              |
+| ------------------ | ------------------------ |
+| `npm start`        | Start development server |
+| `npm test`         | Run unit tests           |
+| `npm run build`    | Build for production     |
+| `npm run test:e2e` | Run Cypress E2E tests    |
+
+## Admin Credentials
+
+- Username: `admin`
+- Password: `admin123`

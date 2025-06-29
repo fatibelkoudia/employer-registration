@@ -18,8 +18,9 @@ app = FastAPI(
 origins = [
     "http://localhost:3000",
     "https://employer-registration-fz.vercel.app",
+    "https://employer-registration-nr19kmot4.vercel.app",
     "https://*.vercel.app",
-    "*"  # Pour Vercel
+    "*"  # Pour Vercel (can be more restrictive in production)
 ]
 
 app.add_middleware(
@@ -34,10 +35,11 @@ app.add_middleware(
 def get_connection():
     """Connexion à la base de données MySQL"""
     try:
+        # Use environment variables - no hardcoded production credentials
         host = os.getenv("MYSQL_HOST", "localhost")
         user = os.getenv("MYSQL_USER", "root")
-        password = os.getenv("MYSQL_ROOT_PASSWORD") if user == "root" else os.getenv("MYSQL_PASSWORD")
-        database = os.getenv("MYSQL_DATABASE", "ynov_ci_test")
+        password = os.getenv("MYSQL_PASSWORD", "")
+        database = os.getenv("MYSQL_DATABASE", "ynov_ci_local")
         
         print(f"Connexion à: host={host}, user={user}, db={database}")
         
@@ -53,7 +55,7 @@ def get_connection():
         raise
 
 # Configuration JWT
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-super-secret-key-change-this-in-production")
+SECRET_KEY = os.getenv("JWT_SECRET_KEY", "local-development-secret-key-change-this")
 ALGORITHM = "HS256"
 security = HTTPBearer()
 
@@ -101,14 +103,28 @@ async def health_check():
     """Endpoint de santé pour le debugging"""
     try:
         env_vars = {
-            "MYSQL_HOST": os.getenv("MYSQL_HOST", "NOT_SET"),
-            "MYSQL_USER": os.getenv("MYSQL_USER", "NOT_SET"),
-            "MYSQL_DATABASE": os.getenv("MYSQL_DATABASE", "NOT_SET"),
-            "JWT_SECRET_KEY": "SET" if os.getenv("JWT_SECRET_KEY") else "NOT_SET"
+            "MYSQL_HOST": os.getenv("MYSQL_HOST", "localhost"),
+            "MYSQL_USER": os.getenv("MYSQL_USER", "root"),
+            "MYSQL_DATABASE": os.getenv("MYSQL_DATABASE", "ynov_ci_local"),
+            "JWT_SECRET_KEY": "SET" if os.getenv("JWT_SECRET_KEY") else "USING_DEFAULT",
+            "ENVIRONMENT": "PRODUCTION" if os.getenv("MYSQL_HOST") and "alwaysdata" in os.getenv("MYSQL_HOST", "") else "DEVELOPMENT"
         }
+        
+        # Test database connection
+        try:
+            conn = get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT 1")
+            cursor.fetchone()
+            cursor.close()
+            conn.close()
+            db_status = "connected"
+        except Exception as db_error:
+            db_status = f"error: {str(db_error)}"
         
         return {
             "status": "healthy",
+            "database": db_status,
             "environment": env_vars,
             "message": "All systems operational"
         }
@@ -243,10 +259,10 @@ async def delete_user(user_id: int, current_admin: str = Depends(verify_admin_to
         print(f"Erreur delete_user: {e}")
         return {"error": str(e)}
 
-# # Pour le déploiement Vercel
-# handler = app
+# Pour le déploiement Vercel
+handler = app
 
-# # Pour le développement local
-# if __name__ == "__main__":
-#     import uvicorn
-#     uvicorn.run(app, host="0.0.0.0", port=8000)
+# Pour le développement local
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -1,4 +1,4 @@
-USE ynov_ci;
+USE belkoudia_ynov_ci;
 
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
