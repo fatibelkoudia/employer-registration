@@ -36,6 +36,7 @@ services:
     environment:
       - MYSQL_DATABASE=ynov_ci_test
       - MYSQL_HOST=db
+      - MYSQL_PORT=3306
       - MYSQL_USER=ci_test_user
       - MYSQL_PASSWORD=ci_test_pass
     ports:

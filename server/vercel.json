@@ -1,14 +1,9 @@
 {
-  "devCommand": "uvicorn server:app --host 0.0.0.0 --port 3000",
+  "version": 2,
   "builds": [
     {
       "src": "server.py",
-      "use": "@vercel/python",
-      "config": {
-        "includeFiles": [
-          "**"
-        ]
-      }
+      "use": "@vercel/python"
     }
   ],
   "routes": [
@@ -16,10 +11,5 @@
       "src": "/(.*)",
       "dest": "server.py"
     }
-  ],
-  "git": {
-    "deploymentEnabled": {
-      "main": false
-    }
-  }
+  ]
 }

@@ -112,9 +112,6 @@ jobs:
           # Also clean up any other Python artifacts that might cause issues
           sudo rm -rf server/__pycache__ || true
           sudo rm -rf server/*.pyc || true
-          # List contents to verify cleanup
-          echo "Server directory contents after cleanup:"
-          ls -la server/ || true
       - name: Build Project Artifacts
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Backend to Vercel

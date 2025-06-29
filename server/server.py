@@ -37,21 +37,28 @@ def get_connection():
     try:
         # Use environment variables - no hardcoded production credentials
         host = os.getenv("MYSQL_HOST", "localhost")
+        port = int(os.getenv("MYSQL_PORT", "3306"))
         user = os.getenv("MYSQL_USER", "root")
         password = os.getenv("MYSQL_PASSWORD", "")
         database = os.getenv("MYSQL_DATABASE", "ynov_ci_local")
         
-        print(f"Connexion à: host={host}, user={user}, db={database}")
+        # Check if we have the required environment variables
+        if not all([host, user, password, database]):
+            missing = []
+            if not host or host == "localhost": missing.append("MYSQL_HOST")
+            if not user or user == "root": missing.append("MYSQL_USER") 
+            if not password: missing.append("MYSQL_PASSWORD")
+            if not database or database == "ynov_ci_local": missing.append("MYSQL_DATABASE")
+            raise Exception(f"Missing required environment variables: {', '.join(missing)}")
         
         return mysql.connector.connect(
             host=host,
+            port=port,
             user=user,
             password=password,
             database=database,
-            port=3306,
         )
     except Exception as e:
-        print(f"Erreur connexion DB: {e}")
         raise
 
 # Configuration JWT
@@ -90,7 +97,11 @@ def create_admin_token(username: str):
 @app.get("/")
 async def root():
     """Page d'accueil de l'API"""
-    return {"message": "Employer Registration API", "status": "running", "version": "1.0.0"}
+    return {
+        "message": "Employer Registration API", 
+        "status": "running", 
+        "version": "1.0.0"
+    }
 
 @app.get("/api")
 @app.get("/api/")
@@ -100,7 +111,7 @@ async def api_root():
 
 @app.get("/api/health")
 async def health_check():
-    """Endpoint de santé pour le debugging"""
+    """Endpoint de santé de l'API"""
     try:
         env_vars = {
             "MYSQL_HOST": os.getenv("MYSQL_HOST", "localhost"),
@@ -144,7 +155,6 @@ async def get_users():
         conn.close()
         return {"utilisateurs": records}
     except Exception as e:
-        print(f"Erreur get_users: {e}")
         return {
             "error": "Database unavailable", 
             "message": str(e),
@@ -183,7 +193,6 @@ async def create_user(request: Request):
         
         return {"utilisateur": data, "success": True}
     except Exception as e:
-        print(f"Erreur create_user: {e}")
         return {"error": str(e), "success": False}
 
 # Routes admin
@@ -211,7 +220,6 @@ async def admin_login(request: Request):
             return {"success": False, "message": "Invalid credentials"}
             
     except Exception as e:
-        print(f"Erreur admin_login: {e}")
         return {"success": False, "message": "Login error"}
 
 @app.get("/api/admin/users")
@@ -226,7 +234,6 @@ async def get_admin_users(current_admin: str = Depends(verify_admin_token)):
         conn.close()
         return {"utilisateurs": records}
     except Exception as e:
-        print(f"Erreur get_admin_users: {e}")
         return {"error": str(e), "utilisateurs": []}
 
 @app.delete("/api/admin/users/{user_id}")
@@ -256,11 +263,7 @@ async def delete_user(user_id: int, current_admin: str = Depends(verify_admin_to
     except HTTPException:
         raise
     except Exception as e:
-        print(f"Erreur delete_user: {e}")
         return {"error": str(e)}
-
-# Pour le déploiement Vercel
-handler = app
 
 # Pour le développement local
 if __name__ == "__main__":
