@@ -83,6 +83,9 @@ jobs:
       # Deploy Frontend to GitHub Pages
       - name: Build React App for GitHub Pages
         run: npm run build
+        env:
+          REACT_APP_API_URL: https://employer-registration-fz.vercel.app
+          PUBLIC_URL: https://fatibelkoudia.github.io/employer-registration
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload to GitHub Pages
@@ -116,11 +119,11 @@ jobs:
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Backend to Vercel
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
-      
+
       # Run Database Migration
       - name: Install MySQL connector for migration
         run: pip3 install mysql-connector-python==8.2.0
-      
+
       - name: Run Database Migration
         run: python3 scripts/migrate.py
         env:

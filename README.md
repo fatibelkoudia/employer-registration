@@ -5,7 +5,7 @@ Full-stack employee registration with React frontend, Python backend, and MySQL 
 ## Live Links
 
 - **Frontend**: https://fatibelkoudia.github.io/employer-registration/
-- **Backend API**: https://employer-registration-nr19kmot4.vercel.app/
+- **Backend API**: https://employer-registration-fz.vercel.app
 
 ## Features
 
